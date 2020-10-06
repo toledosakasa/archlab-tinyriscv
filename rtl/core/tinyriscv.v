@@ -172,7 +172,7 @@ module tinyriscv(
         .jtag_halt_flag_i(jtag_halt_flag_i)
     );
 
-    // regs模块例化
+    // regs模块例化, 两读一写寄存器堆
     regs u_regs(
         .clk(clk),
         .rst(rst),
@@ -189,7 +189,7 @@ module tinyriscv(
         .jtag_data_o(jtag_reg_data_o)
     );
 
-    // csr_reg模块例化
+    // csr_reg模块例化  csr 控制寄存器， 和regs在一起
     csr_reg u_csr_reg(
         .clk(clk),
         .rst(rst),

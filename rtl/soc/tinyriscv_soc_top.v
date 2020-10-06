@@ -132,7 +132,8 @@ module tinyriscv_soc_top(
     wire[31:0] gpio_ctrl;
     wire[31:0] gpio_data;
 
-    assign int_flag = {7'h0, timer0_int};
+    assign int_flag = {7'h0, timer0_int};   //7' 为位宽, h表示十六进制。 {}是把1二者拼接起来成为你一个8位的数
+                                            //此处只有时钟中断
 
     // 低电平点亮LED
     // 低电平表示已经halt住CPU
