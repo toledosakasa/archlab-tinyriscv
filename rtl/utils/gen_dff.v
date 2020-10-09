@@ -15,6 +15,8 @@
  */
 
 // 带默认值和控制信号的流水线触发器
+// 如果不hold或者!rst,那么qout就是din的值。否则就是默认值def_val
+// 有 always @ (posedge clk) ，即在时钟上升沿才改变
 module gen_pipe_dff #(
     parameter DW = 32)(
 

@@ -147,7 +147,7 @@ module tinyriscv(
     assign rib_pc_addr_o = pc_pc_o;
 
 
-    // pc_reg模块例化
+    // pc_reg模块例化, 几个输入是受控制模块ctrl支配的
     pc_reg u_pc_reg(
         .clk(clk),
         .rst(rst),
@@ -158,7 +158,7 @@ module tinyriscv(
         .jump_addr_i(ctrl_jump_addr_o)
     );
 
-    // ctrl模块例化
+    // ctrl模块例化, 产生控制信号的模块，执行部分，clint，和rib会产生一些信号作为控制模块的输入
     ctrl u_ctrl(
         .rst(rst),
         .jump_flag_i(ex_jump_flag_o),
@@ -180,7 +180,7 @@ module tinyriscv(
         .waddr_i(ex_reg_waddr_o),
         .wdata_i(ex_reg_wdata_o),
         .raddr1_i(id_reg1_raddr_o),
-        .rdata1_o(regs_rdata1_o),
+        .rdata1_o(regs_rdata1_o), //读寄存器1的数据
         .raddr2_i(id_reg2_raddr_o),
         .rdata2_o(regs_rdata2_o),
         .jtag_we_i(jtag_reg_we_i),
@@ -213,11 +213,11 @@ module tinyriscv(
     if_id u_if_id(
         .clk(clk),
         .rst(rst),
-        .inst_i(rib_pc_data_i),
-        .inst_addr_i(pc_pc_o),
-        .int_flag_i(int_i),
-        .int_flag_o(if_int_flag_o),
-        .hold_flag_i(ctrl_hold_flag_o),
+        .inst_i(rib_pc_data_i), //取到的指令内容
+        .inst_addr_i(pc_pc_o), // pc指针
+        .int_flag_i(int_i),    //中断信号，int_i是来源于顶层中赋值的{7'h0, timer0_int}
+        .int_flag_o(if_int_flag_o), // 输出的中断信号,产生的方式不太理解，涉及gen_pipe_dff
+        .hold_flag_i(ctrl_hold_flag_o), // 流水线暂停标志
         .inst_o(if_inst_o),
         .inst_addr_o(if_inst_addr_o)
     );
@@ -225,28 +225,28 @@ module tinyriscv(
     // id模块例化
     id u_id(
         .rst(rst),
-        .inst_i(if_inst_o),
-        .inst_addr_i(if_inst_addr_o),
-        .reg1_rdata_i(regs_rdata1_o),
-        .reg2_rdata_i(regs_rdata2_o),
-        .ex_jump_flag_i(ex_jump_flag_o),
-        .reg1_raddr_o(id_reg1_raddr_o),
-        .reg2_raddr_o(id_reg2_raddr_o),
-        .inst_o(id_inst_o),
-        .inst_addr_o(id_inst_addr_o),
-        .reg1_rdata_o(id_reg1_rdata_o),
-        .reg2_rdata_o(id_reg2_rdata_o),
-        .reg_we_o(id_reg_we_o),
-        .reg_waddr_o(id_reg_waddr_o),
-        .op1_o(id_op1_o),
+        .inst_i(if_inst_o), // if_id输出的指令内容
+        .inst_addr_i(if_inst_addr_o), // if_id输出的指令地址
+        .reg1_rdata_i(regs_rdata1_o), //寄存器堆的读数据1
+        .reg2_rdata_i(regs_rdata2_o), //寄存器堆的读数据2
+        .ex_jump_flag_i(ex_jump_flag_o), //执行模块产生的是否跳转标志
+        .reg1_raddr_o(id_reg1_raddr_o), //由译码部件产生的, 读通用寄存器1地址
+        .reg2_raddr_o(id_reg2_raddr_o), //由译码部件产生的, 读通用寄存器2地址
+        .inst_o(id_inst_o), //id输出的指令内容, 和输入的inst_i一样
+        .inst_addr_o(id_inst_addr_o), //id输出的指令地址, 和输入的inst_addr_i一样
+        .reg1_rdata_o(id_reg1_rdata_o), //id输出的寄存器堆的读数据，和reg1_rdata_i一样
+        .reg2_rdata_o(id_reg2_rdata_o), 
+        .reg_we_o(id_reg_we_o),// id输出的写通用寄存器标志
+        .reg_waddr_o(id_reg_waddr_o), //id输出的写通用寄存器堆的地址
+        .op1_o(id_op1_o),//译码得到的操作数1?
         .op2_o(id_op2_o),
-        .op1_jump_o(id_op1_jump_o),
+        .op1_jump_o(id_op1_jump_o), //??
         .op2_jump_o(id_op2_jump_o),
-        .csr_rdata_i(csr_data_o),
-        .csr_raddr_o(id_csr_raddr_o),
-        .csr_we_o(id_csr_we_o),
-        .csr_rdata_o(id_csr_rdata_o),
-        .csr_waddr_o(id_csr_waddr_o)
+        .csr_rdata_i(csr_data_o), // CSR寄存器输入数据
+        .csr_raddr_o(id_csr_raddr_o), // 读CSR寄存器地址
+        .csr_we_o(id_csr_we_o), // 写CSR寄存器标志
+        .csr_rdata_o(id_csr_rdata_o), // CSR寄存器数据
+        .csr_waddr_o(id_csr_waddr_o) // 写CSR寄存器地址
     );
 
     // id_ex模块例化
@@ -285,40 +285,40 @@ module tinyriscv(
     // ex模块例化
     ex u_ex(
         .rst(rst),
-        .inst_i(ie_inst_o),
-        .inst_addr_i(ie_inst_addr_o),
-        .reg_we_i(ie_reg_we_o),
-        .reg_waddr_i(ie_reg_waddr_o),
-        .reg1_rdata_i(ie_reg1_rdata_o),
-        .reg2_rdata_i(ie_reg2_rdata_o),
-        .op1_i(ie_op1_o),
+        .inst_i(ie_inst_o), //输入的指令内容
+        .inst_addr_i(ie_inst_addr_o), //输入的指令地址
+        .reg_we_i(ie_reg_we_o), // 是否写通用寄存器
+        .reg_waddr_i(ie_reg_waddr_o), // 写通用寄存器地址
+        .reg1_rdata_i(ie_reg1_rdata_o), // 通用寄存器1输入数据
+        .reg2_rdata_i(ie_reg2_rdata_o), // 通用寄存器2输入数据
+        .op1_i(ie_op1_o), //操作数1？
         .op2_i(ie_op2_o),
         .op1_jump_i(ie_op1_jump_o),
         .op2_jump_i(ie_op2_jump_o),
-        .mem_rdata_i(rib_ex_data_i),
-        .mem_wdata_o(ex_mem_wdata_o),
-        .mem_raddr_o(ex_mem_raddr_o),
-        .mem_waddr_o(ex_mem_waddr_o),
-        .mem_we_o(ex_mem_we_o),
-        .mem_req_o(ex_mem_req_o),
-        .reg_wdata_o(ex_reg_wdata_o),
-        .reg_we_o(ex_reg_we_o),
-        .reg_waddr_o(ex_reg_waddr_o),
-        .hold_flag_o(ex_hold_flag_o),
-        .jump_flag_o(ex_jump_flag_o),
-        .jump_addr_o(ex_jump_addr_o),
-        .int_assert_i(clint_int_assert_o),
-        .int_addr_i(clint_int_addr_o),
-        .div_ready_i(div_ready_o),
-        .div_result_i(div_result_o),
-        .div_busy_i(div_busy_o),
-        .div_reg_waddr_i(div_reg_waddr_o),
-        .div_start_o(ex_div_start_o),
-        .div_dividend_o(ex_div_dividend_o),
-        .div_divisor_o(ex_div_divisor_o),
-        .div_op_o(ex_div_op_o),
-        .div_reg_waddr_o(ex_div_reg_waddr_o),
-        .csr_we_i(ie_csr_we_o),
+        .mem_rdata_i(rib_ex_data_i), // 从外设读取的数据, 是m0_data_o，即总线中主模块0的输出数据
+        .mem_wdata_o(ex_mem_wdata_o), // 写内存数据
+        .mem_raddr_o(ex_mem_raddr_o), // 读内存地址
+        .mem_waddr_o(ex_mem_waddr_o), // 写内存地址
+        .mem_we_o(ex_mem_we_o), // 是否写内存
+        .mem_req_o(ex_mem_req_o), // 请求访问内存标志
+        .reg_wdata_o(ex_reg_wdata_o), // 写寄存器数据
+        .reg_we_o(ex_reg_we_o), // 是否要写通用寄存器
+        .reg_waddr_o(ex_reg_waddr_o), // 写通用寄存器地址
+        .hold_flag_o(ex_hold_flag_o), // 是否暂停标志, 传给ctrl模块
+        .jump_flag_o(ex_jump_flag_o), // 是否跳转标志
+        .jump_addr_o(ex_jump_addr_o), // 跳转目的地址
+        .int_assert_i(clint_int_assert_o), // 中断发生标志, 从clint模块那里过来
+        .int_addr_i(clint_int_addr_o), // 中断跳转地址
+        .div_ready_i(div_ready_o), // 除法运算完成标志，从div模块那里过来
+        .div_result_i(div_result_o), // 除法运算结果
+        .div_busy_i(div_busy_o), // 除法运算忙标志
+        .div_reg_waddr_i(div_reg_waddr_o), // 除法运算结束后要写的寄存器地址
+        .div_start_o(ex_div_start_o), // 开始除法运算标志, 传给div模块
+        .div_dividend_o(ex_div_dividend_o), // 被除数
+        .div_divisor_o(ex_div_divisor_o), // 除数
+        .div_op_o(ex_div_op_o), // 具体是哪一条除法指令
+        .div_reg_waddr_o(ex_div_reg_waddr_o), // 除法运算结束后要写的寄存器地址
+        .csr_we_i(ie_csr_we_o), // 是否写CSR寄存器
         .csr_waddr_i(ie_csr_waddr_o),
         .csr_rdata_i(ie_csr_rdata_o),
         .csr_wdata_o(ex_csr_wdata_o),
@@ -330,15 +330,15 @@ module tinyriscv(
     div u_div(
         .clk(clk),
         .rst(rst),
-        .dividend_i(ex_div_dividend_o),
-        .divisor_i(ex_div_divisor_o),
-        .start_i(ex_div_start_o),
-        .op_i(ex_div_op_o),
-        .reg_waddr_i(ex_div_reg_waddr_o),
-        .result_o(div_result_o),
-        .ready_o(div_ready_o),
-        .busy_o(div_busy_o),
-        .reg_waddr_o(div_reg_waddr_o)
+        .dividend_i(ex_div_dividend_o), // 被除数, 从ex模块来
+        .divisor_i(ex_div_divisor_o), // 除数
+        .start_i(ex_div_start_o), // 开始信号，运算期间这个信号需要一直保持有效
+        .op_i(ex_div_op_o), // 具体是哪一条指令
+        .reg_waddr_i(ex_div_reg_waddr_o), // 运算结束后需要写的寄存器
+        .result_o(div_result_o), // 除法结果，高32位是余数，低32位是商 ??
+        .ready_o(div_ready_o), // 运算结束信号
+        .busy_o(div_busy_o), // 正在运算信号 
+        .reg_waddr_o(div_reg_waddr_o) // 运算结束后需要写的寄存器
     );
 
     // clint模块例化
