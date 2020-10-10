@@ -47,7 +47,9 @@ module tinyriscv_soc_tb;
 `endif
         $display("test running...");
         #40
-        rst = `RstDisable;
+        // 一开始40个周期内ret信号为RstEnable，即完成一个初始化的过程，即把机器状态初始化。
+        //之后rst都是RstDisable，处理器正常运行
+        rst = `RstDisable; 
         #200
 
 `ifdef TEST_PROG

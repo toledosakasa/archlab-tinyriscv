@@ -151,7 +151,7 @@ module tinyriscv(
     pc_reg u_pc_reg(
         .clk(clk),
         .rst(rst),
-        .jtag_reset_flag_i(jtag_reset_flag_i),
+        .jtag_reset_flag_i(jtag_reset_flag_i), // jtag复位PC标志
         .pc_o(pc_pc_o),
         .hold_flag_i(ctrl_hold_flag_o),
         .jump_flag_i(ctrl_jump_flag_o),
@@ -345,25 +345,25 @@ module tinyriscv(
     clint u_clint(
         .clk(clk),
         .rst(rst),
-        .int_flag_i(if_int_flag_o),
-        .inst_i(id_inst_o),
-        .inst_addr_i(id_inst_addr_o),
-        .jump_flag_i(ex_jump_flag_o),
-        .jump_addr_i(ex_jump_addr_o),
-        .hold_flag_i(ctrl_hold_flag_o),
-        .div_started_i(ex_div_start_o),
-        .data_i(csr_clint_data_o),
-        .csr_mtvec(csr_clint_csr_mtvec),
-        .csr_mepc(csr_clint_csr_mepc),
-        .csr_mstatus(csr_clint_csr_mstatus),
-        .we_o(clint_we_o),
-        .waddr_o(clint_waddr_o),
-        .raddr_o(clint_raddr_o),
-        .data_o(clint_data_o),
-        .hold_flag_o(clint_hold_flag_o),
-        .global_int_en_i(csr_global_int_en_o),
-        .int_addr_o(clint_int_addr_o),
-        .int_assert_o(clint_int_assert_o)
+        .int_flag_i(if_int_flag_o), // 中断输入信号
+        .inst_i(id_inst_o),  // 指令内容
+        .inst_addr_i(id_inst_addr_o), // 指令地址 
+        .jump_flag_i(ex_jump_flag_o), // 是否跳转标志
+        .jump_addr_i(ex_jump_addr_o), // 跳转目的地址
+        .hold_flag_i(ctrl_hold_flag_o),  // 流水线暂停标志
+        .div_started_i(ex_div_start_o), // 开始除法运算标志,从ex模块来
+        .data_i(csr_clint_data_o), // CSR寄存器输入数据
+        .csr_mtvec(csr_clint_csr_mtvec), // mtvec寄存器??
+        .csr_mepc(csr_clint_csr_mepc), // mepc寄存器
+        .csr_mstatus(csr_clint_csr_mstatus), // mstatus寄存器
+        .we_o(clint_we_o), // 写CSR寄存器标志
+        .waddr_o(clint_waddr_o), // 写CSR寄存器地址
+        .raddr_o(clint_raddr_o), // 读CSR寄存器地址
+        .data_o(clint_data_o), // 写CSR寄存器数据
+        .hold_flag_o(clint_hold_flag_o), // 流水线暂停标志
+        .global_int_en_i(csr_global_int_en_o), // 全局中断使能标志
+        .int_addr_o(clint_int_addr_o), // 中断入口地址
+        .int_assert_o(clint_int_assert_o) // 中断标志
     );
 
 endmodule

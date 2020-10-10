@@ -129,6 +129,7 @@ module id(
                             op1_o = reg1_rdata_i;
                             op2_o = reg2_rdata_i;
                         end
+                        //除法貌似要交给除法器
                         `INST_DIV, `INST_DIVU, `INST_REM, `INST_REMU: begin
                             reg_we_o = `WriteDisable;
                             reg_waddr_o = rd;
@@ -137,7 +138,7 @@ module id(
                             op1_o = reg1_rdata_i;
                             op2_o = reg2_rdata_i;
                             op1_jump_o = inst_addr_i;
-                            op2_jump_o = 32'h4;
+                            op2_jump_o = 32'h4;//要跳到当前指令地址+4的地方去？
                         end
                         default: begin
                             reg_we_o = `WriteDisable;
@@ -153,6 +154,7 @@ module id(
                     reg2_raddr_o = `ZeroReg;
                 end
             end
+            //load型指令
             `INST_TYPE_L: begin
                 case (funct3)
                     `INST_LB, `INST_LH, `INST_LW, `INST_LBU, `INST_LHU: begin
@@ -171,6 +173,7 @@ module id(
                     end
                 endcase
             end
+            //store型指令
             `INST_TYPE_S: begin
                 case (funct3)
                     `INST_SB, `INST_SW, `INST_SH: begin
@@ -189,6 +192,7 @@ module id(
                     end
                 endcase
             end
+            //b型分支指令
             `INST_TYPE_B: begin
                 case (funct3)
                     `INST_BEQ, `INST_BNE, `INST_BLT, `INST_BGE, `INST_BLTU, `INST_BGEU: begin
@@ -209,6 +213,8 @@ module id(
                     end
                 endcase
             end
+            //jal指令会把本来的下一条指令地址存到rd去
+            //目的地址是当前地址+20位的立即数偏移量
             `INST_JAL: begin
                 reg_we_o = `WriteEnable;
                 reg_waddr_o = rd;
@@ -219,6 +225,7 @@ module id(
                 op1_jump_o = inst_addr_i;
                 op2_jump_o = {{12{inst_i[31]}}, inst_i[19:12], inst_i[20], inst_i[30:21], 1'b0};
             end
+            //目的地址是reg1的内容+12位的立即数偏移量
             `INST_JALR: begin
                 reg_we_o = `WriteEnable;
                 reg1_raddr_o = rs1;
@@ -229,6 +236,7 @@ module id(
                 op1_jump_o = reg1_rdata_i;
                 op2_jump_o = {{20{inst_i[31]}}, inst_i[31:20]};
             end
+            //lui指令，把20位的立即数低位0扩展后存入rd中
             `INST_LUI: begin
                 reg_we_o = `WriteEnable;
                 reg_waddr_o = rd;
@@ -237,6 +245,7 @@ module id(
                 op1_o = {inst_i[31:12], 12'b0};
                 op2_o = `ZeroWord;
             end
+            //auipc指令，把20位立即数低位0扩展后和当前指令相加后存入rd中
             `INST_AUIPC: begin
                 reg_we_o = `WriteEnable;
                 reg_waddr_o = rd;
@@ -259,6 +268,7 @@ module id(
                 op1_jump_o = inst_addr_i;
                 op2_jump_o = 32'h4;
             end
+            //详见riscv手册中相关内容,page 55
             `INST_CSR: begin
                 reg_we_o = `WriteDisable;
                 reg_waddr_o = `ZeroReg;
