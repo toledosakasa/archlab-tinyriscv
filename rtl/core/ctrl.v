@@ -54,6 +54,7 @@ module ctrl(
         if (jump_flag_i == `JumpEnable || hold_flag_ex_i == `HoldEnable || hold_flag_clint_i == `HoldEnable) begin
             // 暂停整条流水线
             hold_flag_o = `Hold_Id;
+        //hold_flag_rib_i是访问外存时总线传出的暂停信号
         end else if (hold_flag_rib_i == `HoldEnable) begin
             // 暂停PC，即取指地址不变
             hold_flag_o = `Hold_Pc;

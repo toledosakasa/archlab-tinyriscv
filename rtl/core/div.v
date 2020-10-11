@@ -159,9 +159,9 @@ module div(
 
                 STATE_CALC: begin
                     if (start_i == `DivStart) begin
-                        dividend_r <= {dividend_r[30:0], 1'b0};
+                        dividend_r <= {dividend_r[30:0], 1'b0};//左移被除数？
                         div_result <= div_result_tmp;
-                        count <= {1'b0, count[31:1]};
+                        count <= {1'b0, count[31:1]};//右移count？
                         if (|count) begin
                             minuend <= {minuend_tmp[30:0], dividend_r[30]};
                         end else begin

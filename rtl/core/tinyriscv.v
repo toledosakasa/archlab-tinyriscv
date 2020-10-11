@@ -138,7 +138,7 @@ module tinyriscv(
     wire clint_int_assert_o;
     wire clint_hold_flag_o;
 
-
+    //WriteEnable时会使用写地址而非读地址，但奇怪的是在写操作里还是把读地址也赋值了
     assign rib_ex_addr_o = (ex_mem_we_o == `WriteEnable)? ex_mem_waddr_o: ex_mem_raddr_o;
     assign rib_ex_data_o = ex_mem_wdata_o;
     assign rib_ex_req_o = ex_mem_req_o;

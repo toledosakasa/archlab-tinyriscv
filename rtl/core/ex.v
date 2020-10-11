@@ -180,6 +180,7 @@ module ex(
                     mul_op1 = (reg1_rdata_i[31] == 1'b1)? (reg1_data_invert): reg1_rdata_i;
                     mul_op2 = reg2_rdata_i;
                 end
+                //对有符号数的负数，需要把它取反？
                 `INST_MULH: begin
                     mul_op1 = (reg1_rdata_i[31] == 1'b1)? (reg1_data_invert): reg1_rdata_i;
                     mul_op2 = (reg2_rdata_i[31] == 1'b1)? (reg2_data_invert): reg2_rdata_i;
@@ -208,7 +209,7 @@ module ex(
             case (funct3)
                 `INST_DIV, `INST_DIVU, `INST_REM, `INST_REMU: begin
                     div_start = `DivStart;
-                    div_jump_flag = `JumpEnable;
+                    div_jump_flag = `JumpEnable;   
                     div_hold_flag = `HoldEnable;
                     div_jump_addr = op1_jump_add_op2_jump_res;
                 end
