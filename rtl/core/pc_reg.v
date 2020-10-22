@@ -26,6 +26,8 @@ module pc_reg(
     input wire[`InstAddrBus] jump_addr_i,   // 跳转地址
     input wire[`Hold_Flag_Bus] hold_flag_i, // 流水线暂停标志
     input wire jtag_reset_flag_i,           // 复位标志
+    input wire isbranch_i,                  // 分支标志
+    input wire[`InstAddrBus] branch_addr_i, // 分支地址
 
     output reg[`InstAddrBus] pc_o           // PC指针
 
@@ -44,7 +46,11 @@ module pc_reg(
             pc_o <= pc_o;
         // 地址加4
         end else begin
-            pc_o <= pc_o + 4'h4;
+            if (isbranch_i == `JumpEnable) begin
+                pc_o <= branch_addr_i;
+            end else begin
+                pc_o <= pc_o + 4'h4; 
+            end
         end
     end
 

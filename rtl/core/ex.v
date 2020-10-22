@@ -38,6 +38,7 @@ module ex(
     input wire[`MemAddrBus] op2_i,
     input wire[`MemAddrBus] op1_jump_i,
     input wire[`MemAddrBus] op2_jump_i,
+    input wire isbranch_i,
 
     // from mem
     input wire[`MemBus] mem_rdata_i,        // 内存输入数据
@@ -160,8 +161,12 @@ module ex(
     assign mem_req_o = (int_assert_i == `INT_ASSERT)? `RIB_NREQ: mem_req;
 
     assign hold_flag_o = hold_flag || div_hold_flag;
-    assign jump_flag_o = jump_flag || div_jump_flag || ((int_assert_i == `INT_ASSERT)? `JumpEnable: `JumpDisable);
-    assign jump_addr_o = (int_assert_i == `INT_ASSERT)? int_addr_i: (jump_addr | div_jump_addr);
+    wire assist_jump_flag;
+    assign assist_jump_flag = jump_flag || div_jump_flag || ((int_assert_i == `INT_ASSERT)? `JumpEnable: `JumpDisable);
+    assign jump_flag_o = isbranch_i ^ assist_jump_flag;
+    // always外面不能用if？
+    // always里面不能assign wire？
+    assign jump_addr_o = (isbranch_i == `JumpEnable)? inst_addr_i + 4'h4: (int_assert_i == `INT_ASSERT)? int_addr_i: (jump_addr | div_jump_addr);
 
     // 响应中断时不写CSR寄存器
     assign csr_we_o = (int_assert_i == `INT_ASSERT)? `WriteDisable: csr_we_i;

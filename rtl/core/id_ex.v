@@ -35,8 +35,10 @@ module id_ex(
     input wire[`MemAddrBus] op2_i,
     input wire[`MemAddrBus] op1_jump_i,
     input wire[`MemAddrBus] op2_jump_i,
+    input wire isbranch_i,                  // 分支标志
 
     input wire[`Hold_Flag_Bus] hold_flag_i, // 流水线暂停标志
+
 
     output wire[`MemAddrBus] op1_o,
     output wire[`MemAddrBus] op2_o,
@@ -50,7 +52,8 @@ module id_ex(
     output wire[`RegBus] reg2_rdata_o,       // 通用寄存器2读数据
     output wire csr_we_o,                    // 写CSR寄存器标志
     output wire[`MemAddrBus] csr_waddr_o,    // 写CSR寄存器地址
-    output wire[`RegBus] csr_rdata_o         // CSR寄存器读数据
+    output wire[`RegBus] csr_rdata_o,         // CSR寄存器读数据
+    output wire isbranch_o                  // 分支标志
 
     );
 
@@ -107,5 +110,9 @@ module id_ex(
     wire[`MemAddrBus] op2_jump;
     gen_pipe_dff #(32) op2_jump_ff(clk, rst, hold_en, `ZeroWord, op2_jump_i, op2_jump);
     assign op2_jump_o = op2_jump;
+
+    wire isbranch;
+    gen_pipe_dff #(1) isbranch_ff(clk, rst, hold_en, `JumpDisable, isbranch_i, isbranch);
+    assign isbranch_o = isbranch;
 
 endmodule

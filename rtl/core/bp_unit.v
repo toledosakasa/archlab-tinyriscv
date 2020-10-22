@@ -17,7 +17,7 @@
 `include "defines.v"
 
 // 将指令向译码模块传递
-module if_id(
+module bp_unit(
 
     input wire clk,
     input wire rst,
@@ -25,35 +25,25 @@ module if_id(
     input wire[`InstBus] inst_i,            // 指令内容
     input wire[`InstAddrBus] inst_addr_i,   // 指令地址
 
-    input wire isbranch_i,                  // 分支标志
-
-    input wire[`Hold_Flag_Bus] hold_flag_i, // 流水线暂停标志
-
-    input wire[`INT_BUS] int_flag_i,        // 外设中断输入信号
-    output wire[`INT_BUS] int_flag_o,
-
-    output wire[`InstBus] inst_o,           // 指令内容
-    output wire[`InstAddrBus] inst_addr_o,   // 指令地址
-    output wire isbranch_o                  // 分支标志
+    output reg isbranch_o,
+    output reg [`InstAddrBus] branch_addr_o
 
     );
+    wire[6:0] opcode = inst_i[6:0];
+    wire[2:0] funct3 = inst_i[14:12];
 
-    wire hold_en = (hold_flag_i >= `Hold_If);
-
-    wire[`InstBus] inst;
-    gen_pipe_dff #(32) inst_ff(clk, rst, hold_en, `INST_NOP, inst_i, inst);
-    assign inst_o = inst;
-
-    wire[`InstAddrBus] inst_addr;
-    gen_pipe_dff #(32) inst_addr_ff(clk, rst, hold_en, `ZeroWord, inst_addr_i, inst_addr);
-    assign inst_addr_o = inst_addr;
-
-    wire[`INT_BUS] int_flag;
-    gen_pipe_dff #(8) int_ff(clk, rst, hold_en, `INT_NONE, int_flag_i, int_flag);
-    assign int_flag_o = int_flag;
-
-    wire isbranch;
-    gen_pipe_dff #(1) isbranch_ff(clk, rst, hold_en, `JumpDisable, isbranch_i, isbranch);
-    assign isbranch_o = isbranch;
+    always @ (*) begin
+        isbranch_o = `JumpDisable;
+        branch_addr_o = `ZeroWord;
+        //b型分支指令
+        if (opcode == `INST_TYPE_B) begin
+            case (funct3)
+                `INST_BEQ, `INST_BNE, `INST_BLT, `INST_BGE, `INST_BLTU, `INST_BGEU: begin
+                    isbranch_o = `JumpEnable;
+                    branch_addr_o = inst_addr_i + {{20{inst_i[31]}}, inst_i[7], inst_i[30:25], inst_i[11:8], 1'b0};
+                end
+            endcase
+        end
+    end
 
 endmodule

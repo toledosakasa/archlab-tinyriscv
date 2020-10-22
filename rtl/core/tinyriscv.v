@@ -47,10 +47,15 @@ module tinyriscv(
     // pc_reg模块输出信号
 	wire[`InstAddrBus] pc_pc_o;
 
+    //bp_unit模块输出信号
+    wire bp_isbranch_o;
+    wire[`InstAddrBus] bp_branch_addr_o;
+
     // if_id模块输出信号
 	wire[`InstBus] if_inst_o;
     wire[`InstAddrBus] if_inst_addr_o;
     wire[`INT_BUS] if_int_flag_o;
+    wire if_isbranch_o;
 
     // id模块输出信号
     wire[`RegAddrBus] id_reg1_raddr_o;
@@ -84,6 +89,7 @@ module tinyriscv(
     wire[`MemAddrBus] ie_op2_o;
     wire[`MemAddrBus] ie_op1_jump_o;
     wire[`MemAddrBus] ie_op2_jump_o;
+    wire ie_isbranch_o;
 
     // ex模块输出信号
     wire[`MemBus] ex_mem_wdata_o;
@@ -155,7 +161,18 @@ module tinyriscv(
         .pc_o(pc_pc_o),
         .hold_flag_i(ctrl_hold_flag_o),
         .jump_flag_i(ctrl_jump_flag_o),
-        .jump_addr_i(ctrl_jump_addr_o)
+        .jump_addr_i(ctrl_jump_addr_o),
+        .isbranch_i(bp_isbranch_o),
+        .branch_addr_i(bp_branch_addr_o)
+    );
+
+    bp_unit u_bp_unit(
+        .clk(clk),
+        .rst(rst),
+        .inst_i(rib_pc_data_i), // jtag复位PC标志
+        .inst_addr_i(pc_pc_o),
+        .isbranch_o(bp_isbranch_o),
+        .branch_addr_o(bp_branch_addr_o)
     );
 
     // ctrl模块例化, 产生控制信号的模块，执行部分，clint，和rib会产生一些信号作为控制模块的输入
@@ -219,7 +236,9 @@ module tinyriscv(
         .int_flag_o(if_int_flag_o), // 输出的中断信号,产生的方式不太理解，涉及gen_pipe_dff
         .hold_flag_i(ctrl_hold_flag_o), // 流水线暂停标志
         .inst_o(if_inst_o),
-        .inst_addr_o(if_inst_addr_o)
+        .inst_addr_o(if_inst_addr_o),
+        .isbranch_i(bp_isbranch_o),
+        .isbranch_o(if_isbranch_o)
     );
 
     // id模块例化
@@ -279,7 +298,9 @@ module tinyriscv(
         .csr_rdata_i(id_csr_rdata_o),
         .csr_we_o(ie_csr_we_o),
         .csr_waddr_o(ie_csr_waddr_o),
-        .csr_rdata_o(ie_csr_rdata_o)
+        .csr_rdata_o(ie_csr_rdata_o),
+        .isbranch_i(if_isbranch_o),
+        .isbranch_o(ie_isbranch_o)
     );
 
     // ex模块例化
@@ -323,7 +344,8 @@ module tinyriscv(
         .csr_rdata_i(ie_csr_rdata_o),
         .csr_wdata_o(ex_csr_wdata_o),
         .csr_we_o(ex_csr_we_o),
-        .csr_waddr_o(ex_csr_waddr_o)
+        .csr_waddr_o(ex_csr_waddr_o),
+        .isbranch_i(ie_isbranch_o)
     );
 
     // div模块例化
