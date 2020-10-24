@@ -44,6 +44,11 @@ module bp_unit(
                 end
             endcase
         end
+        //jal
+        if (opcode == `INST_JAL) begin
+            isbranch_o = `JumpEnable;
+            branch_addr_o = inst_addr_i + {{12{inst_i[31]}}, inst_i[19:12], inst_i[20], inst_i[30:21], 1'b0};
+        end
     end
 
 endmodule
