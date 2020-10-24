@@ -26,11 +26,29 @@ module bp_unit(
     input wire[`InstAddrBus] inst_addr_i,   // 指令地址
 
     output reg isbranch_o,
-    output reg [`InstAddrBus] branch_addr_o
+    output reg [`InstAddrBus] branch_addr_o,
 
+    input wire[1:0] branch_taken_i
     );
     wire[6:0] opcode = inst_i[6:0];
     wire[2:0] funct3 = inst_i[14:12];
+    reg[1:0] bp_counter;
+    always @(posedge clk) begin
+        if (rst == `RstEnable) begin
+            bp_counter = 2'b00;
+        end else begin
+            if(branch_taken_i == 2'b01)begin // not taken
+                if(bp_counter > 2'b00)begin
+                    bp_counter = bp_counter - 2'b01;
+                end
+            end
+            else if (branch_taken_i == 2'b10) begin // taken
+                if(bp_counter < 2'b11)begin
+                    bp_counter = bp_counter + 2'b01;
+                end
+            end
+        end
+    end
 
     always @ (*) begin
         isbranch_o = `JumpDisable;
@@ -40,7 +58,7 @@ module bp_unit(
             case (funct3)
                 `INST_BEQ, `INST_BNE, `INST_BLT, `INST_BGE, `INST_BLTU, `INST_BGEU: begin
                     branch_addr_o = inst_addr_i + {{20{inst_i[31]}}, inst_i[7], inst_i[30:25], inst_i[11:8], 1'b0};
-                    if(branch_addr_o > inst_addr_i + 4'h4)
+                    if(bp_counter > 2'b01)
                         isbranch_o = `JumpEnable;
                 end
             endcase

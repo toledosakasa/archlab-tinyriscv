@@ -111,6 +111,7 @@ module tinyriscv(
     wire[`RegBus] ex_csr_wdata_o;
     wire ex_csr_we_o;
     wire[`MemAddrBus] ex_csr_waddr_o;
+    wire[1:0] ex_branch_taken_o;
 
     // regs模块输出信号
     wire[`RegBus] regs_rdata1_o;
@@ -172,7 +173,8 @@ module tinyriscv(
         .inst_i(rib_pc_data_i), // jtag复位PC标志
         .inst_addr_i(pc_pc_o),
         .isbranch_o(bp_isbranch_o),
-        .branch_addr_o(bp_branch_addr_o)
+        .branch_addr_o(bp_branch_addr_o),
+        .branch_taken_i(ex_branch_taken_o)
     );
 
     // ctrl模块例化, 产生控制信号的模块，执行部分，clint，和rib会产生一些信号作为控制模块的输入
@@ -345,7 +347,8 @@ module tinyriscv(
         .csr_wdata_o(ex_csr_wdata_o),
         .csr_we_o(ex_csr_we_o),
         .csr_waddr_o(ex_csr_waddr_o),
-        .isbranch_i(ie_isbranch_o)
+        .isbranch_i(ie_isbranch_o),
+        .branch_taken_o(ex_branch_taken_o)
     );
 
     // div模块例化

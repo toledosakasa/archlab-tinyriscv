@@ -76,8 +76,10 @@ module ex(
     // to ctrl
     output wire hold_flag_o,                // 是否暂停标志
     output wire jump_flag_o,                // 是否跳转标志
-    output wire[`InstAddrBus] jump_addr_o   // 跳转目的地址
+    output wire[`InstAddrBus] jump_addr_o,   // 跳转目的地址
 
+    // to bp_unit
+    output wire[1:0] branch_taken_o
     );
 
     wire[1:0] mem_raddr_index;
@@ -167,6 +169,7 @@ module ex(
     // always外面不能用if？
     // always里面不能assign wire？
     assign jump_addr_o = (isbranch_i == `JumpEnable)? inst_addr_i + 4'h4: (int_assert_i == `INT_ASSERT)? int_addr_i: (jump_addr | div_jump_addr);
+    assign branch_taken_o = (opcode == `INST_TYPE_B)? ((assist_jump_flag == `JumpEnable) ?2'b10 : 2'b01) :2'b00;
 
     // 响应中断时不写CSR寄存器
     assign csr_we_o = (int_assert_i == `INT_ASSERT)? `WriteDisable: csr_we_i;
