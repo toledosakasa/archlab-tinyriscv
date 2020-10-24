@@ -39,8 +39,9 @@ module bp_unit(
         if (opcode == `INST_TYPE_B) begin
             case (funct3)
                 `INST_BEQ, `INST_BNE, `INST_BLT, `INST_BGE, `INST_BLTU, `INST_BGEU: begin
-                    isbranch_o = `JumpEnable;
                     branch_addr_o = inst_addr_i + {{20{inst_i[31]}}, inst_i[7], inst_i[30:25], inst_i[11:8], 1'b0};
+                    if(branch_addr_o > inst_addr_i + 4'h4)
+                        isbranch_o = `JumpEnable;
                 end
             endcase
         end
