@@ -28,23 +28,34 @@ module bp_unit(
     output reg isbranch_o,
     output reg [`InstAddrBus] branch_addr_o,
 
-    input wire[1:0] branch_taken_i
+    input wire[1:0] branch_taken_i,
+    input wire[`InstBus] ex_inst_addr_i
     );
     wire[6:0] opcode = inst_i[6:0];
     wire[2:0] funct3 = inst_i[14:12];
-    reg[1:0] bp_counter;
+    reg[1:0] bp_counter[15:0];
+    wire[3:0] ex_pc_index = ex_inst_addr_i[31:28];
+    wire[3:0] pc_index = inst_addr_i[31:28];
+    wire[1:0] bp_counter_now;
+    wire[1:0] bp_counter_ex;
+    assign bp_counter_now = bp_counter[pc_index];
+    assign bp_counter_ex = bp_counter[ex_pc_index];
+
+    integer i;
     always @(posedge clk) begin
         if (rst == `RstEnable) begin
-            bp_counter = 2'b00;
+            for (i = 0; i<=15; i=i+1) begin
+                bp_counter[i] <= 2'b00;
+            end
         end else begin
             if(branch_taken_i == 2'b01)begin // not taken
-                if(bp_counter > 2'b00)begin
-                    bp_counter = bp_counter - 2'b01;
+                if(bp_counter[ex_pc_index] > 2'b00)begin
+                    bp_counter[ex_pc_index] = bp_counter[ex_pc_index] - 2'b01;
                 end
             end
             else if (branch_taken_i == 2'b10) begin // taken
-                if(bp_counter < 2'b11)begin
-                    bp_counter = bp_counter + 2'b01;
+                if(bp_counter[ex_pc_index] < 2'b11)begin
+                    bp_counter[ex_pc_index] = bp_counter[ex_pc_index] + 2'b01;
                 end
             end
         end
@@ -58,7 +69,7 @@ module bp_unit(
             case (funct3)
                 `INST_BEQ, `INST_BNE, `INST_BLT, `INST_BGE, `INST_BLTU, `INST_BGEU: begin
                     branch_addr_o = inst_addr_i + {{20{inst_i[31]}}, inst_i[7], inst_i[30:25], inst_i[11:8], 1'b0};
-                    if(bp_counter > 2'b01)
+                    if(bp_counter[pc_index] > 2'b01)
                         isbranch_o = `JumpEnable;
                 end
             endcase

@@ -174,7 +174,8 @@ module tinyriscv(
         .inst_addr_i(pc_pc_o),
         .isbranch_o(bp_isbranch_o),
         .branch_addr_o(bp_branch_addr_o),
-        .branch_taken_i(ex_branch_taken_o)
+        .branch_taken_i(ex_branch_taken_o),
+        .ex_inst_addr_i(ie_inst_addr_o)
     );
 
     // ctrl模块例化, 产生控制信号的模块，执行部分，clint，和rib会产生一些信号作为控制模块的输入
