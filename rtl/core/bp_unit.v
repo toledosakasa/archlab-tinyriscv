@@ -21,6 +21,7 @@ module bp_unit(
 
     input wire clk,
     input wire rst,
+    input wire[`Hold_Flag_Bus] hold_flag_i, // 流水线暂停标志
 
     input wire[`InstBus] inst_i,            // 指令内容
     input wire[`InstAddrBus] inst_addr_i,   // 指令地址
@@ -28,35 +29,44 @@ module bp_unit(
     output reg isbranch_o,
     output reg [`InstAddrBus] branch_addr_o,
 
-    input wire[1:0] branch_taken_i,
-    input wire[`InstBus] ex_inst_addr_i
+    input wire[1:0] branch_taken_i
     );
     wire[6:0] opcode = inst_i[6:0];
     wire[2:0] funct3 = inst_i[14:12];
-    reg[1:0] bp_counter[15:0];
-    wire[3:0] ex_pc_index = ex_inst_addr_i[31:28];
-    wire[3:0] pc_index = inst_addr_i[31:28];
-    wire[1:0] bp_counter_now;
-    wire[1:0] bp_counter_ex;
-    assign bp_counter_now = bp_counter[pc_index];
-    assign bp_counter_ex = bp_counter[ex_pc_index];
+    reg[1:0] bp_counter[3:0];
+    reg[1:0] history;
+    wire [1:0] history_0;
+    wire [1:0] history_1;
+    wire [1:0] history_2;
+    wire hold_en1 = (hold_flag_i >= `Hold_If);
+    wire hold_en2 = (hold_flag_i >= `Hold_Id);
+    assign history_0 = history;
+    gen_pipe_dff #(2) history_ff1(clk, rst, hold_en1, 2'b00, history_0, history_1);
+    gen_pipe_dff #(2) history_ff2(clk, rst, hold_en2, 2'b00, history_1, history_2);
+    wire [1:0]assist1;
+    wire [1:0]assist2;
+    assign assist1 = bp_counter[history];
+    assign assist2 = bp_counter[history_2];
 
     integer i;
     always @(posedge clk) begin
         if (rst == `RstEnable) begin
-            for (i = 0; i<=15; i=i+1) begin
+            for (i = 0; i<=3; i=i+1) begin
                 bp_counter[i] <= 2'b00;
+                history <= 2'b00;
             end
         end else begin
             if(branch_taken_i == 2'b01)begin // not taken
-                if(bp_counter[ex_pc_index] > 2'b00)begin
-                    bp_counter[ex_pc_index] = bp_counter[ex_pc_index] - 2'b01;
+                if(bp_counter[history_2] > 2'b00)begin
+                    bp_counter[history_2] = bp_counter[history_2] - 2'b01;
                 end
+                history = (history <<1) + 2'b00;
             end
             else if (branch_taken_i == 2'b10) begin // taken
-                if(bp_counter[ex_pc_index] < 2'b11)begin
-                    bp_counter[ex_pc_index] = bp_counter[ex_pc_index] + 2'b01;
+                if(bp_counter[history_2] < 2'b11)begin
+                    bp_counter[history_2] = bp_counter[history_2] + 2'b01;
                 end
+                history = (history <<1) + 2'b01;
             end
         end
     end
@@ -69,7 +79,7 @@ module bp_unit(
             case (funct3)
                 `INST_BEQ, `INST_BNE, `INST_BLT, `INST_BGE, `INST_BLTU, `INST_BGEU: begin
                     branch_addr_o = inst_addr_i + {{20{inst_i[31]}}, inst_i[7], inst_i[30:25], inst_i[11:8], 1'b0};
-                    if(bp_counter[pc_index] > 2'b01)
+                    if(bp_counter[history] > 2'b01)
                         isbranch_o = `JumpEnable;
                 end
             endcase
