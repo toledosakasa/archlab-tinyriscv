@@ -74,6 +74,12 @@ module tinyriscv(
     wire[`MemAddrBus] id_op2_o;
     wire[`MemAddrBus] id_op1_jump_o;
     wire[`MemAddrBus] id_op2_jump_o;
+    wire[`FRegAddrBus] id_freg1_raddr_o;
+    wire[`FRegAddrBus] id_freg2_raddr_o;
+    wire[`FRegBus] id_freg1_rdata_o;
+    wire[`FRegBus] id_freg2_rdata_o;
+    wire id_freg_we_o;
+    wire[`FRegAddrBus] id_freg_waddr_o;
 
     // id_ex模块输出信号
     wire[`InstBus] ie_inst_o;
@@ -90,6 +96,10 @@ module tinyriscv(
     wire[`MemAddrBus] ie_op1_jump_o;
     wire[`MemAddrBus] ie_op2_jump_o;
     wire ie_isbranch_o;
+    wire ie_freg_we_o;
+    wire[`FRegAddrBus] ie_freg_waddr_o;
+    wire[`FRegBus] ie_freg1_rdata_o;
+    wire[`FRegBus] ie_freg2_rdata_o;
 
     // ex模块输出信号
     wire[`MemBus] ex_mem_wdata_o;
@@ -112,10 +122,23 @@ module tinyriscv(
     wire ex_csr_we_o;
     wire[`MemAddrBus] ex_csr_waddr_o;
     wire[1:0] ex_branch_taken_o;
+    wire ex_freg_we_o;
+    wire[`FRegAddrBus] ex_freg_waddr_o;
+    wire[`FRegBus] ex_freg_wdata_o;
+    wire[`FRegBus] ex_fpu_a_o; 
+    wire[`FRegBus] ex_fpu_b_o;
+    wire[1:0] ex_fpu_op_o;
+
+    //fpu输出信号
+    wire[`FRegBus] fpu_fpu_result_o;
 
     // regs模块输出信号
     wire[`RegBus] regs_rdata1_o;
     wire[`RegBus] regs_rdata2_o;
+
+    //fregs 输出信号
+    wire[`FRegBus] fregs_rdata1_o;
+    wire[`FRegBus] fregs_rdata2_o;
 
     // csr_reg模块输出信号
     wire[`RegBus] csr_data_o;
@@ -209,6 +232,19 @@ module tinyriscv(
         .jtag_data_o(jtag_reg_data_o)
     );
 
+    // fregs模块例化
+    regs u_fregs(
+        .clk(clk),
+        .rst(rst),
+        .we_i(ex_freg_we_o),
+        .waddr_i(ex_freg_waddr_o),
+        .wdata_i(ex_freg_wdata_o),
+        .raddr1_i(id_freg1_raddr_o),
+        .rdata1_o(fregs_rdata1_o), //读寄存器1的数据
+        .raddr2_i(id_freg2_raddr_o),
+        .rdata2_o(fregs_rdata2_o)
+    );
+
     // csr_reg模块例化  csr 控制寄存器， 和regs在一起
     csr_reg u_csr_reg(
         .clk(clk),
@@ -268,7 +304,15 @@ module tinyriscv(
         .csr_raddr_o(id_csr_raddr_o), // 读CSR寄存器地址
         .csr_we_o(id_csr_we_o), // 写CSR寄存器标志
         .csr_rdata_o(id_csr_rdata_o), // CSR寄存器数据
-        .csr_waddr_o(id_csr_waddr_o) // 写CSR寄存器地址
+        .csr_waddr_o(id_csr_waddr_o), // 写CSR寄存器地址
+        .freg1_rdata_i(fregs_rdata1_o),
+        .freg2_rdata_i(fregs_rdata2_o),
+        .freg1_raddr_o(id_freg1_raddr_o),
+        .freg2_raddr_o(id_freg2_raddr_o),
+        .freg1_rdata_o(id_freg1_rdata_o),
+        .freg2_rdata_o(id_freg2_rdata_o),
+        .freg_we_o(id_freg_we_o),
+        .freg_waddr_o(id_freg_waddr_o)
     );
 
     // id_ex模块例化
@@ -303,7 +347,15 @@ module tinyriscv(
         .csr_waddr_o(ie_csr_waddr_o),
         .csr_rdata_o(ie_csr_rdata_o),
         .isbranch_i(if_isbranch_o),
-        .isbranch_o(ie_isbranch_o)
+        .isbranch_o(ie_isbranch_o),
+        .freg_we_i(id_freg_we_o),
+        .freg_waddr_i(id_freg_waddr_o),
+        .freg1_rdata_i(id_freg1_rdata_o),
+        .freg2_rdata_i(id_freg2_rdata_o),
+        .freg_we_o(ie_freg_we_o),
+        .freg_waddr_o(ie_freg_waddr_o),
+        .freg1_rdata_o(ie_freg1_rdata_o),
+        .freg2_rdata_o(ie_freg2_rdata_o)
     );
 
     // ex模块例化
@@ -349,7 +401,26 @@ module tinyriscv(
         .csr_we_o(ex_csr_we_o),
         .csr_waddr_o(ex_csr_waddr_o),
         .isbranch_i(ie_isbranch_o),
-        .branch_taken_o(ex_branch_taken_o)
+        .branch_taken_o(ex_branch_taken_o),
+        .freg_wdata_o(ex_freg_wdata_o),
+        .freg_we_o(ex_freg_we_o), 
+        .freg_waddr_o(ex_freg_waddr_o),
+        .freg_we_i(ie_freg_we_o),
+        .freg_waddr_i(ie_freg_waddr_o),
+        .freg1_rdata_i(ie_freg1_rdata_o),
+        .freg2_rdata_i(ie_freg2_rdata_o),
+        .fpu_a_o(ex_fpu_a_o),
+        .fpu_b_o(ex_fpu_b_o),
+        .fpu_op_o(ex_fpu_op_o),
+        .fpu_result_i(fpu_fpu_result_o)
+    );
+
+    //fpu模块例化
+    fpu u_fpu(
+        .A(ex_fpu_a_o),
+        .B(ex_fpu_b_o),
+        .opcode(ex_fpu_op_o),
+        .O(fpu_fpu_result_o)
     );
 
     // div模块例化

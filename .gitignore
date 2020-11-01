@@ -1,5 +1,6 @@
 /tools/
 /sim/
+/rtl/fpu/
 *.gz
 *.docx
 *.pdf

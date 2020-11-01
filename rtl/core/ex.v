@@ -29,6 +29,10 @@ module ex(
     input wire[`RegAddrBus] reg_waddr_i,    // 写通用寄存器地址
     input wire[`RegBus] reg1_rdata_i,       // 通用寄存器1输入数据
     input wire[`RegBus] reg2_rdata_i,       // 通用寄存器2输入数据
+    input wire freg_we_i,                   // 是否写浮点寄存器
+    input wire[`FRegAddrBus] freg_waddr_i,  // 写浮点寄存器地址
+    input wire[`FRegBus] freg1_rdata_i,     // 浮点寄存器1输入数据
+    input wire[`FRegBus] freg2_rdata_i,     // 浮点寄存器2输入数据
     input wire csr_we_i,                    // 是否写CSR寄存器
     input wire[`MemAddrBus] csr_waddr_i,    // 写CSR寄存器地址
     input wire[`RegBus] csr_rdata_i,        // CSR寄存器输入数据
@@ -49,6 +53,9 @@ module ex(
     input wire div_busy_i,                  // 除法运算忙标志
     input wire[`RegAddrBus] div_reg_waddr_i,// 除法运算结束后要写的寄存器地址
 
+    // from fpu
+    input wire[`FRegBus] fpu_result_i,
+
     // to mem
     output reg[`MemBus] mem_wdata_o,        // 写内存数据
     output reg[`MemAddrBus] mem_raddr_o,    // 读内存地址
@@ -61,6 +68,11 @@ module ex(
     output wire reg_we_o,                   // 是否要写通用寄存器
     output wire[`RegAddrBus] reg_waddr_o,   // 写通用寄存器地址
 
+    // to fregs
+    output reg[`FRegBus] freg_wdata_o,     // 写寄存器数据
+    output wire freg_we_o,                  // 是否要写通用寄存器
+    output wire[`FRegAddrBus] freg_waddr_o, // 写通用寄存器地址
+
     // to csr reg
     output reg[`RegBus] csr_wdata_o,        // 写CSR寄存器数据
     output wire csr_we_o,                   // 是否要写CSR寄存器
@@ -72,6 +84,11 @@ module ex(
     output reg[`RegBus] div_divisor_o,      // 除数
     output reg[2:0] div_op_o,               // 具体是哪一条除法指令
     output reg[`RegAddrBus] div_reg_waddr_o,// 除法运算结束后要写的寄存器地址
+
+    // to fpu
+    output reg [`FRegBus] fpu_a_o,
+    output reg [`FRegBus] fpu_b_o,
+    output reg [1:0] fpu_op_o,
 
     // to ctrl
     output wire hold_flag_o,                // 是否暂停标志
@@ -156,6 +173,9 @@ module ex(
     assign reg_we_o = (int_assert_i == `INT_ASSERT)? `WriteDisable: (reg_we || div_we);
     assign reg_waddr_o = reg_waddr | div_waddr;
 
+    assign freg_we_o = (int_assert_i == `INT_ASSERT)? `WriteDisable: freg_we_i;
+    assign freg_waddr_o = freg_waddr_i;
+
     // 响应中断时不写内存
     assign mem_we_o = (int_assert_i == `INT_ASSERT)? `WriteDisable: mem_we;
 
@@ -201,6 +221,26 @@ module ex(
         end else begin
             mul_op1 = reg1_rdata_i;
             mul_op2 = reg2_rdata_i;
+        end
+    end
+
+    // 处理浮点指令
+    always @ (*) begin
+        if (opcode == `INST_TYPE_FP) begin
+            fpu_a_o = freg1_rdata_i;
+            fpu_b_o = freg2_rdata_i;
+            case(funct7)
+                `INST_FADD: begin
+                    fpu_op_o = 2'b00;
+                end
+                `INST_FSUB: begin
+                    fpu_op_o = 2'b01;
+                end
+            endcase
+        end else begin
+            fpu_a_o = `ZeroWord;
+            fpu_b_o = `ZeroWord;
+            fpu_op_o = 2'b00;
         end
     end
 
@@ -259,6 +299,7 @@ module ex(
         reg_waddr = reg_waddr_i;
         mem_req = `RIB_NREQ;
         csr_wdata_o = `ZeroWord;
+        freg_wdata_o = `ZeroWord;
 
         case (opcode)
             `INST_TYPE_I: begin
@@ -358,6 +399,16 @@ module ex(
                         reg_wdata = `ZeroWord;
                     end
                 endcase
+            end
+            `INST_TYPE_FP:begin
+                jump_flag = `JumpDisable;
+                hold_flag = `HoldDisable;
+                jump_addr = `ZeroWord;
+                mem_wdata_o = `ZeroWord;
+                mem_raddr_o = `ZeroWord;
+                mem_waddr_o = `ZeroWord;
+                mem_we = `WriteDisable;
+                freg_wdata_o = fpu_result_i;
             end
             `INST_TYPE_R_M: begin
                 if ((funct7 == 7'b0000000) || (funct7 == 7'b0100000)) begin
@@ -542,6 +593,18 @@ module ex(
                     reg_wdata = `ZeroWord;
                 end
             end
+            `INST_FLW: begin
+                jump_flag = `JumpDisable;
+                hold_flag = `HoldDisable;
+                jump_addr = `ZeroWord;
+                mem_wdata_o = `ZeroWord;
+                mem_waddr_o = `ZeroWord;
+                mem_we = `WriteDisable;
+                reg_wdata = `ZeroWord; 
+                mem_raddr_o = op1_add_op2_res;
+                mem_req = `RIB_REQ;
+                freg_wdata_o = mem_rdata_i;
+            end
             `INST_TYPE_L: begin
                 case (funct3)
                     `INST_LB: begin
@@ -644,6 +707,17 @@ module ex(
                         reg_wdata = `ZeroWord;
                     end
                 endcase
+            end
+            `INST_FSW: begin
+                jump_flag = `JumpDisable;
+                hold_flag = `HoldDisable;
+                jump_addr = `ZeroWord;
+                reg_wdata = `ZeroWord;
+                mem_we = `WriteEnable;
+                mem_req = `RIB_REQ;
+                mem_waddr_o = op1_add_op2_res;
+                mem_raddr_o = op1_add_op2_res;
+                mem_wdata_o = freg2_rdata_i;
             end
             `INST_TYPE_S: begin
                 case (funct3)

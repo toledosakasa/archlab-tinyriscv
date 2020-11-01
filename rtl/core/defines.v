@@ -20,6 +20,7 @@
 `define RstDisable 1'b1
 `define ZeroWord 32'h0
 `define ZeroReg 5'h0
+`define ZeroFReg 5'h0
 `define WriteEnable 1'b1
 `define WriteDisable 1'b0
 `define ReadEnable 1'b1
@@ -136,6 +137,16 @@
 `define INST_CSRRSI 3'b110
 `define INST_CSRRCI 3'b111
 
+//flw
+`define INST_FLW    7'b0000111
+//fsw
+`define INST_FSW    7'b0100111
+//FP type inst
+`define INST_TYPE_FP 7'b1010011
+`define INST_FADD   7'b0000000
+`define INST_FSUB   7'b0000100
+
+
 // CSR reg addr
 `define CSR_CYCLE   12'hc00
 `define CSR_CYCLEH  12'hc80
@@ -162,3 +173,9 @@
 `define RegWidth 32
 `define RegNum 32        // reg num
 `define RegNumLog2 5
+
+//floating regs
+`define FRegAddrBus 4:0
+`define FRegBus 31:0
+`define FRegNum 32        // reg num
+

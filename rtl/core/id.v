@@ -30,6 +30,10 @@ module id(
     input wire[`RegBus] reg1_rdata_i,        // 通用寄存器1输入数据
     input wire[`RegBus] reg2_rdata_i,        // 通用寄存器2输入数据
 
+    // from fregs
+    input wire[`FRegBus] freg1_rdata_i,      // 浮点寄存器1输入数据
+    input wire[`FRegBus] freg2_rdata_i,      // 浮点寄存器2输入数据
+
     // from csr reg
     input wire[`RegBus] csr_rdata_i,         // CSR寄存器输入数据
 
@@ -39,6 +43,10 @@ module id(
     // to regs
     output reg[`RegAddrBus] reg1_raddr_o,    // 读通用寄存器1地址
     output reg[`RegAddrBus] reg2_raddr_o,    // 读通用寄存器2地址
+
+    //to fregs
+    output reg[`FRegAddrBus] freg1_raddr_o,  // 读浮点寄存器1地址
+    output reg[`FRegAddrBus] freg2_raddr_o,  // 读浮点寄存器2地址
 
     // to csr reg
     output reg[`MemAddrBus] csr_raddr_o,     // 读CSR寄存器地址
@@ -54,6 +62,10 @@ module id(
     output reg[`RegBus] reg2_rdata_o,        // 通用寄存器2数据
     output reg reg_we_o,                     // 写通用寄存器标志
     output reg[`RegAddrBus] reg_waddr_o,     // 写通用寄存器地址
+    output reg[`FRegBus] freg1_rdata_o,      // 浮点寄存器1数据
+    output reg[`FRegBus] freg2_rdata_o,      // 浮点寄存器2数据
+    output reg freg_we_o,                    // 写浮点寄存器标志
+    output reg[`FRegAddrBus] freg_waddr_o,   // 写浮点寄存器地址
     output reg csr_we_o,                     // 写CSR寄存器标志
     output reg[`RegBus] csr_rdata_o,         // CSR寄存器数据
     output reg[`MemAddrBus] csr_waddr_o      // 写CSR寄存器地址
@@ -81,6 +93,13 @@ module id(
         op2_o = `ZeroWord;
         op1_jump_o = `ZeroWord;
         op2_jump_o = `ZeroWord;
+        freg1_raddr_o = `ZeroFReg;
+        freg2_raddr_o = `ZeroFReg;
+        freg1_rdata_o = freg1_rdata_i;
+        freg2_rdata_o = freg2_rdata_i;
+        freg_we_o = `WriteDisable;
+        freg_waddr_o = `ZeroWord;
+
 
         case (opcode)
             `INST_TYPE_I: begin
@@ -100,6 +119,18 @@ module id(
                         reg2_raddr_o = `ZeroReg;
                     end
                 endcase
+            end
+            `INST_TYPE_FP:begin
+                freg_we_o = `WriteEnable;
+                freg_waddr_o = rd;
+                freg1_raddr_o = rs1;
+                freg2_raddr_o = rs2;
+                op1_o = freg1_rdata_i;
+                op2_o = freg2_rdata_i;
+                reg_we_o = `WriteDisable;
+                reg_waddr_o = `ZeroReg;
+                reg1_raddr_o = `ZeroReg;
+                reg2_raddr_o = `ZeroReg;
             end
             `INST_TYPE_R_M: begin
                 if ((funct7 == 7'b0000000) || (funct7 == 7'b0100000)) begin
@@ -173,6 +204,19 @@ module id(
                     end
                 endcase
             end
+
+            //f load
+            `INST_FLW: begin
+                reg1_raddr_o = rs1;
+                reg2_raddr_o = `ZeroReg;
+                reg_we_o = `WriteDisable;
+                reg_waddr_o = `ZeroReg;
+                freg_we_o = `WriteEnable;
+                freg_waddr_o = rd;
+                op1_o = reg1_rdata_i;
+                op2_o = {{20{inst_i[31]}}, inst_i[31:20]};
+            end
+
             //store型指令
             `INST_TYPE_S: begin
                 case (funct3)
@@ -192,6 +236,18 @@ module id(
                     end
                 endcase
             end
+
+            //f store
+            `INST_FSW: begin
+                reg1_raddr_o = rs1;
+                reg2_raddr_o = `ZeroReg;
+                reg_we_o = `WriteDisable;
+                reg_waddr_o = `ZeroReg;
+                freg2_raddr_o = rs2;
+                op1_o = reg1_rdata_i;
+                op2_o = {{20{inst_i[31]}}, inst_i[31:25], inst_i[11:7]};
+            end
+
             //b型分支指令
             `INST_TYPE_B: begin
                 case (funct3)

@@ -36,6 +36,10 @@ module id_ex(
     input wire[`MemAddrBus] op1_jump_i,
     input wire[`MemAddrBus] op2_jump_i,
     input wire isbranch_i,                  // 分支标志
+    input wire freg_we_i,                    // 写浮点寄存器标志
+    input wire[`FRegAddrBus] freg_waddr_i,    // 写浮点寄存器地址
+    input wire[`FRegBus] freg1_rdata_i,       // 浮点寄存器1读数据
+    input wire[`FRegBus] freg2_rdata_i,       // 浮点寄存器2读数据
 
     input wire[`Hold_Flag_Bus] hold_flag_i, // 流水线暂停标志
 
@@ -53,8 +57,11 @@ module id_ex(
     output wire csr_we_o,                    // 写CSR寄存器标志
     output wire[`MemAddrBus] csr_waddr_o,    // 写CSR寄存器地址
     output wire[`RegBus] csr_rdata_o,         // CSR寄存器读数据
-    output wire isbranch_o                  // 分支标志
-
+    output wire isbranch_o,                  // 分支标志
+    output wire freg_we_o,                    // 写浮点寄存器标志
+    output wire[`FRegAddrBus] freg_waddr_o,    // 写浮点寄存器地址
+    output wire[`FRegBus] freg1_rdata_o,       // 浮点寄存器1读数据
+    output wire[`FRegBus] freg2_rdata_o       // 浮点寄存器2读数据
     );
 
     wire hold_en = (hold_flag_i >= `Hold_Id);
@@ -82,6 +89,23 @@ module id_ex(
     wire[`RegBus] reg2_rdata;
     gen_pipe_dff #(32) reg2_rdata_ff(clk, rst, hold_en, `ZeroWord, reg2_rdata_i, reg2_rdata);
     assign reg2_rdata_o = reg2_rdata;
+
+    wire freg_we;
+    gen_pipe_dff #(1) freg_we_ff(clk, rst, hold_en, `WriteDisable, freg_we_i, freg_we);
+    assign freg_we_o = freg_we;
+
+    wire[`FRegAddrBus] freg_waddr;
+    gen_pipe_dff #(5) freg_waddr_ff(clk, rst, hold_en, `ZeroFReg, freg_waddr_i, freg_waddr);
+    assign freg_waddr_o = freg_waddr;
+
+    wire[`FRegBus] freg1_rdata;
+    gen_pipe_dff #(32) freg1_rdata_ff(clk, rst, hold_en, `ZeroWord, freg1_rdata_i, freg1_rdata);
+    assign freg1_rdata_o = freg1_rdata;
+
+    wire[`FRegBus] freg2_rdata;
+    gen_pipe_dff #(32) freg2_rdata_ff(clk, rst, hold_en, `ZeroWord, freg2_rdata_i, freg2_rdata);
+    assign freg2_rdata_o = freg2_rdata;
+
 
     wire csr_we;
     gen_pipe_dff #(1) csr_we_ff(clk, rst, hold_en, `WriteDisable, csr_we_i, csr_we);
