@@ -1,0 +1,290 @@
+start_gui
+create_project archlab-vivado C:/archlab-vivado -part xc7z020clg400-1
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'D:/Xilinx/Vivado/2019.2/data/ip'.
+create_project: Time (s): cpu = 00:00:13 ; elapsed = 00:00:10 . Memory (MB): peak = 1029.004 ; gain = 0.000
+set_property board_part tul.com.tw:pynq-z2:part0:1.0 [current_project]
+add_files {C:/archlab-tinyriscv/rtl/core/csr_reg.v C:/archlab-tinyriscv/rtl/utils/full_handshake_rx.v C:/archlab-tinyriscv/rtl/perips/uart.v C:/archlab-tinyriscv/rtl/utils/gen_buf.v C:/archlab-tinyriscv/rtl/core/pc_reg.v C:/archlab-tinyriscv/rtl/core/fpu.v C:/archlab-tinyriscv/rtl/core/div.v C:/archlab-tinyriscv/rtl/core/clint.v C:/archlab-tinyriscv/rtl/core/if_id.v C:/archlab-tinyriscv/rtl/fpu/fpu_danshanley.v C:/archlab-tinyriscv/rtl/utils/gen_dff.v C:/archlab-tinyriscv/rtl/core/rib.v C:/archlab-tinyriscv/rtl/debug/jtag_driver.v C:/archlab-tinyriscv/rtl/fpu/fpu_dawsonjon.v C:/archlab-tinyriscv/rtl/perips/spi.v C:/archlab-tinyriscv/rtl/soc/tinyriscv_soc_top.v C:/archlab-tinyriscv/rtl/core/regs.v C:/archlab-tinyriscv/rtl/core/ex.v C:/archlab-tinyriscv/rtl/core/bp_unit.v C:/archlab-tinyriscv/rtl/debug/uart_debug.v C:/archlab-tinyriscv/rtl/debug/jtag_dm.v C:/archlab-tinyriscv/rtl/perips/timer.v C:/archlab-tinyriscv/rtl/perips/gpio.v C:/archlab-tinyriscv/rtl/core/id_ex.v C:/archlab-tinyriscv/rtl/core/tinyriscv.v C:/archlab-tinyriscv/rtl/perips/rom.v C:/archlab-tinyriscv/rtl/utils/full_handshake_tx.v C:/archlab-tinyriscv/rtl/debug/jtag_top.v C:/archlab-tinyriscv/rtl/perips/ram.v C:/archlab-tinyriscv/rtl/core/ctrl.v C:/archlab-tinyriscv/rtl/core/defines.v C:/archlab-tinyriscv/rtl/core/id.v}
+update_compile_order -fileset sources_1
+update_compile_order -fileset sources_1
+add_files -fileset constrs_1 -norecurse C:/archlab-tinyriscv/pynqz2_constriant.xdc
+add_files -norecurse C:/archlab-tinyriscv/rtl/soc/tinyriscv_soc_top_fpga.v
+update_compile_order -fileset sources_1
+set_property top tinyriscv_soc_top [current_fileset]
+export_ip_user_files -of_objects  [get_files C:/archlab-tinyriscv/rtl/soc/tinyriscv_soc_top_fpga.v] -no_script -reset -force -quiet
+remove_files  C:/archlab-tinyriscv/rtl/soc/tinyriscv_soc_top_fpga.v
+update_compile_order -fileset sources_1
+add_files -norecurse C:/archlab-tinyriscv/rtl/soc/tinyriscv_soc_top_fpga.v
+update_compile_order -fileset sources_1
+create_ip -name clk_wiz -vendor xilinx.com -library ip -version 6.0 -module_name clk_wiz_0 -dir c:/archlab-vivado/archlab-vivado.srcs/sources_1/ip
+set_property -dict [list CONFIG.PRIM_IN_FREQ {125.000} CONFIG.CLKOUT1_REQUESTED_OUT_FREQ {50.000} CONFIG.CLKIN1_JITTER_PS {80.0} CONFIG.MMCM_CLKFBOUT_MULT_F {8.000} CONFIG.MMCM_CLKIN1_PERIOD {8.000} CONFIG.MMCM_CLKOUT0_DIVIDE_F {20.000} CONFIG.CLKOUT1_JITTER {143.688} CONFIG.CLKOUT1_PHASE_ERROR {96.948}] [get_ips clk_wiz_0]
+generate_target {instantiation_template} [get_files c:/archlab-vivado/archlab-vivado.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0.xci]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'clk_wiz_0'...
+update_compile_order -fileset sources_1
+generate_target all [get_files  c:/archlab-vivado/archlab-vivado.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0.xci]
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'clk_wiz_0'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'clk_wiz_0'...
+INFO: [IP_Flow 19-1686] Generating 'Implementation' target for IP 'clk_wiz_0'...
+INFO: [IP_Flow 19-1686] Generating 'Change Log' target for IP 'clk_wiz_0'...
+catch { config_ip_cache -export [get_ips -all clk_wiz_0] }
+export_ip_user_files -of_objects [get_files c:/archlab-vivado/archlab-vivado.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0.xci] -no_script -sync -force -quiet
+create_ip_run [get_files -of_objects [get_fileset sources_1] c:/archlab-vivado/archlab-vivado.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0.xci]
+launch_runs -jobs 4 clk_wiz_0_synth_1
+[Fri Nov 13 21:29:36 2020] Launched clk_wiz_0_synth_1...
+Run output will be captured here: C:/archlab-vivado/archlab-vivado.runs/clk_wiz_0_synth_1/runme.log
+export_simulation -of_objects [get_files c:/archlab-vivado/archlab-vivado.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0.xci] -directory C:/archlab-vivado/archlab-vivado.ip_user_files/sim_scripts -ip_user_files_dir C:/archlab-vivado/archlab-vivado.ip_user_files -ipstatic_source_dir C:/archlab-vivado/archlab-vivado.ip_user_files/ipstatic -lib_map_path [list {modelsim=C:/archlab-vivado/archlab-vivado.cache/compile_simlib/modelsim} {questa=C:/archlab-vivado/archlab-vivado.cache/compile_simlib/questa} {riviera=C:/archlab-vivado/archlab-vivado.cache/compile_simlib/riviera} {activehdl=C:/archlab-vivado/archlab-vivado.cache/compile_simlib/activehdl}] -use_ip_compiled_libs -force -quiet
+update_compile_order -fileset sources_1
+set_property top tinyriscv_soc_top_fpga [current_fileset]
+update_compile_order -fileset sources_1
+create_ip -name dist_mem_gen -vendor xilinx.com -library ip -version 8.0 -module_name dist_mem_gen_1 -dir c:/archlab-vivado/archlab-vivado.srcs/sources_1/ip
+set_property -dict [list CONFIG.depth {4096} CONFIG.data_width {32} CONFIG.Component_Name {dist_mem_gen_1} CONFIG.memory_type {rom}] [get_ips dist_mem_gen_1]
+WARNING: [Vivado 12-3523] Attempt to change 'Component_Name' from 'dist_mem_gen_1' to 'dist_mem_gen_1' is not allowed and is ignored.
+generate_target {instantiation_template} [get_files c:/archlab-vivado/archlab-vivado.srcs/sources_1/ip/dist_mem_gen_1/dist_mem_gen_1.xci]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'dist_mem_gen_1'...
+update_compile_order -fileset sources_1
+generate_target all [get_files  c:/archlab-vivado/archlab-vivado.srcs/sources_1/ip/dist_mem_gen_1/dist_mem_gen_1.xci]
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'dist_mem_gen_1'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'dist_mem_gen_1'...
+INFO: [IP_Flow 19-1686] Generating 'Change Log' target for IP 'dist_mem_gen_1'...
+catch { config_ip_cache -export [get_ips -all dist_mem_gen_1] }
+export_ip_user_files -of_objects [get_files c:/archlab-vivado/archlab-vivado.srcs/sources_1/ip/dist_mem_gen_1/dist_mem_gen_1.xci] -no_script -sync -force -quiet
+create_ip_run [get_files -of_objects [get_fileset sources_1] c:/archlab-vivado/archlab-vivado.srcs/sources_1/ip/dist_mem_gen_1/dist_mem_gen_1.xci]
+launch_runs -jobs 4 dist_mem_gen_1_synth_1
+[Fri Nov 13 22:09:49 2020] Launched dist_mem_gen_1_synth_1...
+Run output will be captured here: C:/archlab-vivado/archlab-vivado.runs/dist_mem_gen_1_synth_1/runme.log
+export_simulation -of_objects [get_files c:/archlab-vivado/archlab-vivado.srcs/sources_1/ip/dist_mem_gen_1/dist_mem_gen_1.xci] -directory C:/archlab-vivado/archlab-vivado.ip_user_files/sim_scripts -ip_user_files_dir C:/archlab-vivado/archlab-vivado.ip_user_files -ipstatic_source_dir C:/archlab-vivado/archlab-vivado.ip_user_files/ipstatic -lib_map_path [list {modelsim=C:/archlab-vivado/archlab-vivado.cache/compile_simlib/modelsim} {questa=C:/archlab-vivado/archlab-vivado.cache/compile_simlib/questa} {riviera=C:/archlab-vivado/archlab-vivado.cache/compile_simlib/riviera} {activehdl=C:/archlab-vivado/archlab-vivado.cache/compile_simlib/activehdl}] -use_ip_compiled_libs -force -quiet
+export_ip_user_files -of_objects  [get_files c:/archlab-vivado/archlab-vivado.srcs/sources_1/ip/dist_mem_gen_1/dist_mem_gen_1.xci] -no_script -reset -force -quiet
+remove_files  -fileset dist_mem_gen_1 c:/archlab-vivado/archlab-vivado.srcs/sources_1/ip/dist_mem_gen_1/dist_mem_gen_1.xci
+INFO: [Project 1-386] Moving file 'c:/archlab-vivado/archlab-vivado.srcs/sources_1/ip/dist_mem_gen_1/dist_mem_gen_1.xci' from fileset 'dist_mem_gen_1' to fileset 'sources_1'.
+create_ip -name dist_mem_gen -vendor xilinx.com -library ip -version 8.0 -module_name dist_mem_gen_0 -dir c:/archlab-vivado/archlab-vivado.srcs/sources_1/ip
+set_property -dict [list CONFIG.depth {4096} CONFIG.data_width {32} CONFIG.memory_type {rom}] [get_ips dist_mem_gen_0]
+generate_target {instantiation_template} [get_files c:/archlab-vivado/archlab-vivado.srcs/sources_1/ip/dist_mem_gen_0/dist_mem_gen_0.xci]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'dist_mem_gen_0'...
+update_compile_order -fileset sources_1
+generate_target all [get_files  c:/archlab-vivado/archlab-vivado.srcs/sources_1/ip/dist_mem_gen_0/dist_mem_gen_0.xci]
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'dist_mem_gen_0'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'dist_mem_gen_0'...
+INFO: [IP_Flow 19-1686] Generating 'Change Log' target for IP 'dist_mem_gen_0'...
+catch { config_ip_cache -export [get_ips -all dist_mem_gen_0] }
+INFO: [IP_Flow 19-4993] Using cached IP synthesis design for IP dist_mem_gen_0, cache-ID = 501673d91b3b49cd; cache size = 0.111 MB.
+export_ip_user_files -of_objects [get_files c:/archlab-vivado/archlab-vivado.srcs/sources_1/ip/dist_mem_gen_0/dist_mem_gen_0.xci] -no_script -sync -force -quiet
+create_ip_run [get_files -of_objects [get_fileset sources_1] c:/archlab-vivado/archlab-vivado.srcs/sources_1/ip/dist_mem_gen_0/dist_mem_gen_0.xci]
+INFO: [Vivado 12-3453] The given sub-design is up-to-date, no action was taken.  If a run is still desired, use the '-force' option for the file:'c:/archlab-vivado/archlab-vivado.srcs/sources_1/ip/dist_mem_gen_0/dist_mem_gen_0.xci'
+export_simulation -of_objects [get_files c:/archlab-vivado/archlab-vivado.srcs/sources_1/ip/dist_mem_gen_0/dist_mem_gen_0.xci] -directory C:/archlab-vivado/archlab-vivado.ip_user_files/sim_scripts -ip_user_files_dir C:/archlab-vivado/archlab-vivado.ip_user_files -ipstatic_source_dir C:/archlab-vivado/archlab-vivado.ip_user_files/ipstatic -lib_map_path [list {modelsim=C:/archlab-vivado/archlab-vivado.cache/compile_simlib/modelsim} {questa=C:/archlab-vivado/archlab-vivado.cache/compile_simlib/questa} {riviera=C:/archlab-vivado/archlab-vivado.cache/compile_simlib/riviera} {activehdl=C:/archlab-vivado/archlab-vivado.cache/compile_simlib/activehdl}] -use_ip_compiled_libs -force -quiet
+set_property -dict [list CONFIG.coefficient_file {C:/archlab-tinyriscv/simple.coe}] [get_ips dist_mem_gen_0]
+INFO: [IP_Flow 19-3484] Absolute path of file 'c:/archlab-tinyriscv/simple.coe' provided. It will be converted relative to IP Instance files '../../../../../archlab-tinyriscv/simple.coe'
+generate_target all [get_files  c:/archlab-vivado/archlab-vivado.srcs/sources_1/ip/dist_mem_gen_0/dist_mem_gen_0.xci]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'dist_mem_gen_0'...
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'dist_mem_gen_0'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'dist_mem_gen_0'...
+INFO: [IP_Flow 19-1686] Generating 'Change Log' target for IP 'dist_mem_gen_0'...
+catch { config_ip_cache -export [get_ips -all dist_mem_gen_0] }
+export_ip_user_files -of_objects [get_files c:/archlab-vivado/archlab-vivado.srcs/sources_1/ip/dist_mem_gen_0/dist_mem_gen_0.xci] -no_script -sync -force -quiet
+create_ip_run [get_files -of_objects [get_fileset sources_1] c:/archlab-vivado/archlab-vivado.srcs/sources_1/ip/dist_mem_gen_0/dist_mem_gen_0.xci]
+launch_runs -jobs 4 dist_mem_gen_0_synth_1
+[Sat Nov 14 15:11:59 2020] Launched dist_mem_gen_0_synth_1...
+Run output will be captured here: C:/archlab-vivado/archlab-vivado.runs/dist_mem_gen_0_synth_1/runme.log
+export_simulation -of_objects [get_files c:/archlab-vivado/archlab-vivado.srcs/sources_1/ip/dist_mem_gen_0/dist_mem_gen_0.xci] -directory C:/archlab-vivado/archlab-vivado.ip_user_files/sim_scripts -ip_user_files_dir C:/archlab-vivado/archlab-vivado.ip_user_files -ipstatic_source_dir C:/archlab-vivado/archlab-vivado.ip_user_files/ipstatic -lib_map_path [list {modelsim=C:/archlab-vivado/archlab-vivado.cache/compile_simlib/modelsim} {questa=C:/archlab-vivado/archlab-vivado.cache/compile_simlib/questa} {riviera=C:/archlab-vivado/archlab-vivado.cache/compile_simlib/riviera} {activehdl=C:/archlab-vivado/archlab-vivado.cache/compile_simlib/activehdl}] -use_ip_compiled_libs -force -quiet
+update_compile_order -fileset sources_1
+launch_simulation
+Command: launch_simulation 
+INFO: [Vivado 12-5698] Checking validity of IPs in the design for the 'XSim' simulator...
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'C:/archlab-vivado/archlab-vivado.sim/sim_1/behav/xsim'
+INFO: [Vivado 12-4795] Using compiled simulation libraries for IPs
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [USF-XSim-7] Finding pre-compiled libraries...
+INFO: [USF-XSim-11] File 'D:/Xilinx/Vivado/2019.2/data/xsim/xsim.ini' copied to run dir:'C:/archlab-vivado/archlab-vivado.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-54] Inspecting design source files for 'tinyriscv_soc_top' in fileset 'sim_1'...
+INFO: [SIM-utils-43] Exported 'C:/archlab-vivado/archlab-vivado.sim/sim_1/behav/xsim/simple.coe'
+INFO: [SIM-utils-43] Exported 'C:/archlab-vivado/archlab-vivado.sim/sim_1/behav/xsim/dist_mem_gen_0.mif'
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-98] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'C:/archlab-vivado/archlab-vivado.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -prj tinyriscv_soc_top_vlog.prj"
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-tinyriscv/rtl/core/bp_unit.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module bp_unit
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-tinyriscv/rtl/core/clint.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module clint
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-tinyriscv/rtl/core/csr_reg.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module csr_reg
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-tinyriscv/rtl/core/ctrl.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module ctrl
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-tinyriscv/rtl/core/div.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module div
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-tinyriscv/rtl/core/ex.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module ex
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-tinyriscv/rtl/fpu/fpu_danshanley.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module fpu
+INFO: [VRFC 10-2458] undeclared symbol a_sign, assumed default net type wire [C:/archlab-tinyriscv/rtl/fpu/fpu_danshanley.v:35]
+INFO: [VRFC 10-2458] undeclared symbol b_sign, assumed default net type wire [C:/archlab-tinyriscv/rtl/fpu/fpu_danshanley.v:39]
+INFO: [VRFC 10-2458] undeclared symbol ADD, assumed default net type wire [C:/archlab-tinyriscv/rtl/fpu/fpu_danshanley.v:43]
+INFO: [VRFC 10-2458] undeclared symbol SUB, assumed default net type wire [C:/archlab-tinyriscv/rtl/fpu/fpu_danshanley.v:44]
+INFO: [VRFC 10-2458] undeclared symbol DIV, assumed default net type wire [C:/archlab-tinyriscv/rtl/fpu/fpu_danshanley.v:45]
+INFO: [VRFC 10-2458] undeclared symbol MUL, assumed default net type wire [C:/archlab-tinyriscv/rtl/fpu/fpu_danshanley.v:46]
+INFO: [VRFC 10-311] analyzing module adder
+INFO: [VRFC 10-311] analyzing module multiplier
+INFO: [VRFC 10-311] analyzing module addition_normaliser
+INFO: [VRFC 10-311] analyzing module multiplication_normaliser
+INFO: [VRFC 10-311] analyzing module divider
+INFO: [VRFC 10-311] analyzing module reciprocal
+WARNING: [VRFC 10-3380] identifier 'N2' is used before its declaration [C:/archlab-tinyriscv/rtl/fpu/fpu_danshanley.v:467]
+WARNING: [VRFC 10-3380] identifier 'D' is used before its declaration [C:/archlab-tinyriscv/rtl/fpu/fpu_danshanley.v:468]
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-tinyriscv/rtl/fpu/fpu_dawsonjon.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module adder
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'adder' [C:/archlab-tinyriscv/rtl/fpu/fpu_dawsonjon.v:5]
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-tinyriscv/rtl/utils/full_handshake_rx.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module full_handshake_rx
+WARNING: [VRFC 10-3380] identifier 'req' is used before its declaration [C:/archlab-tinyriscv/rtl/utils/full_handshake_rx.v:60]
+WARNING: [VRFC 10-3380] identifier 'req' is used before its declaration [C:/archlab-tinyriscv/rtl/utils/full_handshake_rx.v:68]
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-tinyriscv/rtl/utils/full_handshake_tx.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module full_handshake_tx
+WARNING: [VRFC 10-3380] identifier 'ack' is used before its declaration [C:/archlab-tinyriscv/rtl/utils/full_handshake_tx.v:71]
+WARNING: [VRFC 10-3380] identifier 'ack' is used before its declaration [C:/archlab-tinyriscv/rtl/utils/full_handshake_tx.v:79]
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-tinyriscv/rtl/utils/gen_dff.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module gen_pipe_dff
+INFO: [VRFC 10-311] analyzing module gen_rst_0_dff
+INFO: [VRFC 10-311] analyzing module gen_rst_1_dff
+INFO: [VRFC 10-311] analyzing module gen_rst_def_dff
+INFO: [VRFC 10-311] analyzing module gen_en_dff
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-tinyriscv/rtl/perips/gpio.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module gpio
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-tinyriscv/rtl/core/id.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module id
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-tinyriscv/rtl/core/id_ex.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module id_ex
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-tinyriscv/rtl/core/if_id.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module if_id
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-tinyriscv/rtl/debug/jtag_dm.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module jtag_dm
+INFO: [VRFC 10-2458] undeclared symbol tx_idle, assumed default net type wire [C:/archlab-tinyriscv/rtl/debug/jtag_dm.v:325]
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-tinyriscv/rtl/debug/jtag_driver.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module jtag_driver
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-tinyriscv/rtl/debug/jtag_top.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module jtag_top
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-tinyriscv/rtl/core/pc_reg.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module pc_reg
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-tinyriscv/rtl/perips/ram.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module ram
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-tinyriscv/rtl/core/regs.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module regs
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-tinyriscv/rtl/core/rib.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module rib
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-tinyriscv/rtl/perips/rom.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module rom
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-tinyriscv/rtl/perips/spi.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module spi
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-tinyriscv/rtl/perips/timer.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module timer
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-tinyriscv/rtl/core/tinyriscv.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tinyriscv
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-tinyriscv/rtl/perips/uart.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module uart
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-tinyriscv/rtl/debug/uart_debug.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module uart_debug
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-tinyriscv/rtl/soc/tinyriscv_soc_top.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tinyriscv_soc_top
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-vivado/archlab-vivado.sim/sim_1/behav/xsim/glbl.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module glbl
+INFO: [USF-XSim-69] 'compile' step finished in '3' seconds
+INFO: [USF-XSim-3] XSim::Elaborate design
+INFO: [USF-XSim-61] Executing 'ELABORATE' step in 'C:/archlab-vivado/archlab-vivado.sim/sim_1/behav/xsim'
+"xelab -wto 2a8447d5ebad44d9b1d6be096f354f74 --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot tinyriscv_soc_top_behav xil_defaultlib.tinyriscv_soc_top xil_defaultlib.glbl -log elaborate.log"
+Vivado Simulator 2019.2
+Copyright 1986-1999, 2001-2019 Xilinx, Inc. All Rights Reserved.
+Running: D:/Xilinx/Vivado/2019.2/bin/unwrapped/win64.o/xelab.exe -wto 2a8447d5ebad44d9b1d6be096f354f74 --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot tinyriscv_soc_top_behav xil_defaultlib.tinyriscv_soc_top xil_defaultlib.glbl -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+Pass Through NonSizing Optimizer
+ERROR: [VRFC 10-3180] cannot find port 'out' on this module [C:/archlab-tinyriscv/rtl/fpu/fpu_danshanley.v:52]
+ERROR: [VRFC 10-3180] cannot find port 'b' on this module [C:/archlab-tinyriscv/rtl/fpu/fpu_danshanley.v:51]
+ERROR: [VRFC 10-3180] cannot find port 'a' on this module [C:/archlab-tinyriscv/rtl/fpu/fpu_danshanley.v:50]
+ERROR: [VRFC 10-3180] cannot find port 'out' on this module [C:/archlab-tinyriscv/rtl/fpu/fpu_danshanley.v:507]
+ERROR: [VRFC 10-3180] cannot find port 'b' on this module [C:/archlab-tinyriscv/rtl/fpu/fpu_danshanley.v:506]
+ERROR: [VRFC 10-3180] cannot find port 'a' on this module [C:/archlab-tinyriscv/rtl/fpu/fpu_danshanley.v:505]
+ERROR: [VRFC 10-3180] cannot find port 'out' on this module [C:/archlab-tinyriscv/rtl/fpu/fpu_danshanley.v:522]
+ERROR: [VRFC 10-3180] cannot find port 'b' on this module [C:/archlab-tinyriscv/rtl/fpu/fpu_danshanley.v:521]
+ERROR: [VRFC 10-3180] cannot find port 'a' on this module [C:/archlab-tinyriscv/rtl/fpu/fpu_danshanley.v:520]
+ERROR: [VRFC 10-3180] cannot find port 'out' on this module [C:/archlab-tinyriscv/rtl/fpu/fpu_danshanley.v:544]
+ERROR: [VRFC 10-3180] cannot find port 'b' on this module [C:/archlab-tinyriscv/rtl/fpu/fpu_danshanley.v:543]
+ERROR: [VRFC 10-3180] cannot find port 'a' on this module [C:/archlab-tinyriscv/rtl/fpu/fpu_danshanley.v:542]
+ERROR: [XSIM 43-3322] Static elaboration of top level Verilog design unit(s) in library work failed.
+INFO: [USF-XSim-69] 'elaborate' step finished in '2' seconds
+INFO: [USF-XSim-99] Step results log file:'C:/archlab-vivado/archlab-vivado.sim/sim_1/behav/xsim/elaborate.log'
+ERROR: [USF-XSim-62] 'elaborate' step failed with error(s). Please check the Tcl console output or 'C:/archlab-vivado/archlab-vivado.sim/sim_1/behav/xsim/elaborate.log' file for more information.
+ERROR: [Vivado 12-4473] Detected error while running simulation. Please correct the issue and retry this operation.
+launch_simulation: Time (s): cpu = 00:00:01 ; elapsed = 00:00:06 . Memory (MB): peak = 1254.348 ; gain = 13.344
+ERROR: [Common 17-39] 'launch_simulation' failed due to earlier errors.
+set_property SOURCE_SET sources_1 [get_filesets sim_1]
+add_files -fileset sim_1 -norecurse C:/archlab-tinyriscv/tb/tinyriscv_soc_fpga_tb.v
+update_compile_order -fileset sim_1
+set_property top tinyriscv_soc_tb [get_filesets sim_1]
+set_property top_lib xil_defaultlib [get_filesets sim_1]
+update_compile_order -fileset sim_1
+launch_simulation
+Command: launch_simulation 
+INFO: [Vivado 12-5698] Checking validity of IPs in the design for the 'XSim' simulator...
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'C:/archlab-vivado/archlab-vivado.sim/sim_1/behav/xsim'
+INFO: [Vivado 12-4795] Using compiled simulation libraries for IPs
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [USF-XSim-7] Finding pre-compiled libraries...
+INFO: [USF-XSim-11] File 'D:/Xilinx/Vivado/2019.2/data/xsim/xsim.ini' copied to run dir:'C:/archlab-vivado/archlab-vivado.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-54] Inspecting design source files for 'tinyriscv_soc_tb' in fileset 'sim_1'...
+INFO: [SIM-utils-43] Exported 'C:/archlab-vivado/archlab-vivado.sim/sim_1/behav/xsim/simple.coe'
+INFO: [SIM-utils-43] Exported 'C:/archlab-vivado/archlab-vivado.sim/sim_1/behav/xsim/dist_mem_gen_0.mif'
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-98] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'C:/archlab-vivado/archlab-vivado.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -prj tinyriscv_soc_tb_vlog.prj"
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-vivado/archlab-vivado.srcs/sources_1/ip/dist_mem_gen_0/sim/dist_mem_gen_0.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module dist_mem_gen_0
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-vivado/archlab-vivado.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module clk_wiz_0_clk_wiz
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-vivado/archlab-vivado.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module clk_wiz_0
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-tinyriscv/rtl/soc/tinyriscv_soc_top_fpga.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tinyriscv_soc_top_fpga
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-tinyriscv/tb/tinyriscv_soc_fpga_tb.v" into library xil_defaultlib
+ERROR: [VRFC 10-3195] cannot open include file 'defines.v' [C:/archlab-tinyriscv/tb/tinyriscv_soc_fpga_tb.v:3]
+INFO: [VRFC 10-311] analyzing module tinyriscv_soc_tb
+ERROR: [VRFC 10-2865] module 'tinyriscv_soc_tb' ignored due to previous errors [C:/archlab-tinyriscv/tb/tinyriscv_soc_fpga_tb.v:11]
+INFO: [USF-XSim-69] 'compile' step finished in '1' seconds
+INFO: [USF-XSim-99] Step results log file:'C:/archlab-vivado/archlab-vivado.sim/sim_1/behav/xsim/xvlog.log'
+ERROR: [USF-XSim-62] 'compile' step failed with error(s). Please check the Tcl console output or 'C:/archlab-vivado/archlab-vivado.sim/sim_1/behav/xsim/xvlog.log' file for more information.
+ERROR: [Vivado 12-4473] Detected error while running simulation. Please correct the issue and retry this operation.
+ERROR: [Common 17-39] 'launch_simulation' failed due to earlier errors.
+launch_simulation
+Command: launch_simulation 
+INFO: [Vivado 12-5698] Checking validity of IPs in the design for the 'XSim' simulator...
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'C:/archlab-vivado/archlab-vivado.sim/sim_1/behav/xsim'
+INFO: [Vivado 12-4795] Using compiled simulation libraries for IPs
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [USF-XSim-7] Finding pre-compiled libraries...
+INFO: [USF-XSim-11] File 'D:/Xilinx/Vivado/2019.2/data/xsim/xsim.ini' copied to run dir:'C:/archlab-vivado/archlab-vivado.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-54] Inspecting design source files for 'tinyriscv_soc_tb' in fileset 'sim_1'...
+INFO: [SIM-utils-43] Exported 'C:/archlab-vivado/archlab-vivado.sim/sim_1/behav/xsim/simple.coe'
+INFO: [SIM-utils-43] Exported 'C:/archlab-vivado/archlab-vivado.sim/sim_1/behav/xsim/dist_mem_gen_0.mif'
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-98] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'C:/archlab-vivado/archlab-vivado.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -prj tinyriscv_soc_tb_vlog.prj"
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-vivado/archlab-vivado.srcs/sources_1/ip/dist_mem_gen_0/sim/dist_mem_gen_0.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module dist_mem_gen_0
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-vivado/archlab-vivado.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module clk_wiz_0_clk_wiz
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-vivado/archlab-vivado.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module clk_wiz_0
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-tinyriscv/rtl/soc/tinyriscv_soc_top_fpga.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tinyriscv_soc_top_fpga
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/archlab-tinyriscv/tb/tinyriscv_soc_fpga_tb.v" into library xil_defaultlib
+ERROR: [VRFC 10-3195] cannot open include file 'defines.v' [C:/archlab-tinyriscv/tb/tinyriscv_soc_fpga_tb.v:3]
+INFO: [VRFC 10-311] analyzing module tinyriscv_soc_tb
+ERROR: [VRFC 10-2865] module 'tinyriscv_soc_tb' ignored due to previous errors [C:/archlab-tinyriscv/tb/tinyriscv_soc_fpga_tb.v:11]
+INFO: [USF-XSim-69] 'compile' step finished in '1' seconds
+INFO: [USF-XSim-99] Step results log file:'C:/archlab-vivado/archlab-vivado.sim/sim_1/behav/xsim/xvlog.log'
+ERROR: [USF-XSim-62] 'compile' step failed with error(s). Please check the Tcl console output or 'C:/archlab-vivado/archlab-vivado.sim/sim_1/behav/xsim/xvlog.log' file for more information.
+ERROR: [Vivado 12-4473] Detected error while running simulation. Please correct the issue and retry this operation.
+ERROR: [Common 17-39] 'launch_simulation' failed due to earlier errors.

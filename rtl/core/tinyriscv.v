@@ -45,7 +45,7 @@ module tinyriscv(
     );
 
     // pc_reg模块输出信号
-	wire[`InstAddrBus] pc_pc_o;
+	(* mark_debug ="true" *) wire[`InstAddrBus] pc_pc_o;
 
     //bp_unit模块输出信号
     wire bp_isbranch_o;
