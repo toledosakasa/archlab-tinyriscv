@@ -162,3 +162,9 @@
 `define RegWidth 32
 `define RegNum 32        // reg num
 `define RegNumLog2 5
+
+
+//
+`define Sha1In 31:0
+`define Sha1Out 159:0
+`define Sha1Pad 512:0

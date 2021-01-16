@@ -1,0 +1,87 @@
+i = 1, A = dbf0d4ef, B = 67452301, C = 7bf36ae2, D = 98badcfe, E = 10325476, W = 3c3c3c3c
+i = 2, A = 64cb6b08, B = dbf0d4ef, C = 59d148c0, D = 7bf36ae2, E = 98badcfe, W = 80000000
+i = 3, A = 67e2263, B = 64cb6b08, C = f6fc353b, D = 59d148c0, E = 7bf36ae2, W = 0
+i = 4, A = 241252a3, B = 67e2263, C = 1932dac2, D = f6fc353b, E = 59d148c0, W = 0
+i = 5, A = 27502e17, B = 241252a3, C = c19f8898, D = 1932dac2, E = f6fc353b, W = 0
+i = 6, A = 54b6fa78, B = 27502e17, C = c90494a8, D = c19f8898, E = 1932dac2, W = 0
+i = 7, A = cc2427ed, B = 54b6fa78, C = c9d40b85, D = c90494a8, E = c19f8898, W = 0
+i = 8, A = 6a3b0e6a, B = cc2427ed, C = 152dbe9e, D = c9d40b85, E = c90494a8, W = 0
+i = 9, A = 70dd0a1a, B = 6a3b0e6a, C = 730909fb, D = 152dbe9e, E = c9d40b85, W = 0
+i = 10, A = b705816a, B = 70dd0a1a, C = 9a8ec39a, D = 730909fb, E = 152dbe9e, W = 0
+i = 11, A = 63ec6988, B = b705816a, C = 9c374286, D = 9a8ec39a, E = 730909fb, W = 0
+i = 12, A = e7a7f732, B = 63ec6988, C = adc1605a, D = 9c374286, E = 9a8ec39a, W = 0
+i = 13, A = a7e3859d, B = e7a7f732, C = 18fb1a62, D = adc1605a, E = 9c374286, W = 0
+i = 14, A = fc0d823d, B = a7e3859d, C = b9e9fdcc, D = 18fb1a62, E = adc1605a, W = 0
+i = 15, A = 43edc1a0, B = fc0d823d, C = 69f8e167, D = b9e9fdcc, E = 18fb1a62, W = 0
+i = 16, A = 5b1ec608, B = 43edc1a0, C = 7f03608f, D = 69f8e167, E = b9e9fdcc, W = 20
+i = 17, A = 5bcf11af, B = 5b1ec608, C = 10fb7068, D = 7f03608f, E = 69f8e167, W = 78787878
+i = 18, A = 7278f17b, B = 5bcf11af, C = 16c7b182, D = 10fb7068, E = 7f03608f, W = 1
+i = 19, A = 3b9b7b98, B = 7278f17b, C = d6f3c46b, D = 16c7b182, E = 10fb7068, W = 40
+i = 20, A = 26d60ee3, B = 3b9b7b98, C = dc9e3c5e, D = d6f3c46b, E = 16c7b182, W = f0f0f0f0
+i = 21, A = 9259fd36, B = 26d60ee3, C = ee6dee6, D = dc9e3c5e, E = d6f3c46b, W = 2
+i = 22, A = 85bc43b9, B = 9259fd36, C = c9b583b8, D = ee6dee6, E = dc9e3c5e, W = 80
+i = 23, A = 39ed2178, B = 85bc43b9, C = a4967f4d, D = c9b583b8, E = ee6dee6, W = e1e1e1e1
+i = 24, A = a404b91e, B = 39ed2178, C = 616f10ee, D = a4967f4d, E = c9b583b8, W = 44
+i = 25, A = a62bd3f8, B = a404b91e, C = e7b485e, D = 616f10ee, E = a4967f4d, W = f0f0f1f0
+i = 26, A = 67bf8f71, B = a62bd3f8, C = a9012e47, D = e7b485e, E = 616f10ee, W = c3c3c3c1
+i = 27, A = c98ca0a4, B = 67bf8f71, C = 298af4fe, D = a9012e47, E = e7b485e, W = 8
+i = 28, A = 961da060, B = c98ca0a4, C = 59efe3dc, D = 298af4fe, E = a9012e47, W = 200
+i = 29, A = 1d006507, B = 961da060, C = 32632829, D = 59efe3dc, E = 298af4fe, W = 87878787
+i = 30, A = 3602ee67, B = 1d006507, C = 25876818, D = 32632829, E = 59efe3dc, W = 150
+i = 31, A = c73ef8cc, B = 3602ee67, C = c7401941, D = 25876818, E = 32632829, W = 33333733
+i = 32, A = 6cf0dc65, B = c73ef8cc, C = cd80bb99, D = c7401941, E = 25876818, W = f0f0fc5
+i = 33, A = 118c4bab, B = 6cf0dc65, C = 31cfbe33, D = cd80bb99, E = c7401941, W = 11111131
+i = 34, A = f8635c19, B = 118c4bab, C = 5b3c3719, D = 31cfbe33, E = cd80bb99, W = 806
+i = 35, A = e2640c18, B = f8635c19, C = c46312ea, D = 5b3c3719, E = 31cfbe33, W = 1e1e1f1e
+i = 36, A = 182b6d5d, B = e2640c18, C = 7e18d706, D = c46312ea, E = 5b3c3719, W = c3c3c683
+i = 37, A = f4707515, B = 182b6d5d, C = 38990306, D = 7e18d706, E = c46312ea, W = ccccdcc4
+i = 38, A = 5c3297ba, B = f4707515, C = 460adb57, D = 38990306, E = 7e18d706, W = 3c3c3d14
+i = 39, A = c1ed2a79, B = 5c3297ba, C = 7d1c1d45, D = 460adb57, E = 38990306, W = c3c3c343
+i = 40, A = 4c3cb08f, B = c1ed2a79, C = 970ca5ee, D = 7d1c1d45, E = 460adb57, W = 2108
+i = 41, A = ed849344, B = 4c3cb08f, C = 707b4a9e, D = 970ca5ee, E = 7d1c1d45, W = bbbbbbbb
+i = 42, A = 1106f854, B = ed849344, C = d30f2c23, D = 707b4a9e, E = 970ca5ee, W = 1508
+i = 43, A = 6b49ea85, B = 1106f854, C = 3b6124d1, D = d30f2c23, E = 707b4a9e, W = 33337333
+i = 44, A = 6ccc8148, B = 6b49ea85, C = 441be15, D = 3b6124d1, E = d30f2c23, W = f0f0fcd0
+i = 45, A = 17edb391, B = 6ccc8148, C = 5ad27aa1, D = 441be15, E = 3b6124d1, W = f0f0f2f0
+i = 46, A = 14f48f34, B = 17edb391, C = 1b332052, D = 5ad27aa1, E = 441be15, W = 8164
+i = 47, A = 7004c726, B = 14f48f34, C = 45fb6ce4, D = 1b332052, E = 5ad27aa1, W = 22223322
+i = 48, A = 79f136, B = 7004c726, C = 53d23cd, D = 45fb6ce4, E = 1b332052, W = ffffa877
+i = 49, A = 6832d5b3, B = 79f136, C = 9c0131c9, D = 53d23cd, E = 45fb6ce4, W = 696869e1
+i = 50, A = a36ee359, B = 6832d5b3, C = 801e7c4d, D = 9c0131c9, E = 53d23cd, W = c3c3d15f
+i = 51, A = c683f2e2, B = a36ee359, C = da0cb56c, D = 801e7c4d, E = 9c0131c9, W = 3c3c313c
+i = 52, A = 4a791d96, B = c683f2e2, C = 68dbb8d6, D = da0cb56c, E = 801e7c4d, W = cccedd4c
+i = 53, A = a1621528, B = 4a791d96, C = b1a0fcb8, D = 68dbb8d6, E = da0cb56c, W = 78787850
+i = 54, A = fe662c7a, B = a1621528, C = 929e4765, D = b1a0fcb8, E = 68dbb8d6, W = 15888
+i = 55, A = a3888766, B = fe662c7a, C = 2858854a, D = 929e4765, E = b1a0fcb8, W = 2d292d2d
+i = 56, A = 7b3b7421, B = a3888766, C = bf998b1e, D = 2858854a, E = 929e4765, W = f0fc84f
+i = 57, A = f8850381, B = 7b3b7421, C = a8e221d9, D = bf998b1e, E = 2858854a, W = c3c3f3c3
+i = 58, A = c003fed2, B = f8850381, C = 5ecedd08, D = a8e221d9, E = bf998b1e, W = 3c342b54
+i = 59, A = 29dc153c, B = c003fed2, C = 7e2140e0, D = 5ecedd08, E = a8e221d9, W = e1e0f161
+i = 60, A = d17f0971, B = 29dc153c, C = b000ffb4, D = 7e2140e0, E = 5ecedd08, W = fffaa677
+i = 61, A = 6e4d9d2d, B = d17f0971, C = a77054f, D = b000ffb4, E = 7e2140e0, W = 2d3d25ad
+i = 62, A = b97d9de1, B = 6e4d9d2d, C = 745fc25c, D = a77054f, E = b000ffb4, W = 3c3d01f4
+i = 63, A = edb07b32, B = b97d9de1, C = 5b93674b, D = 745fc25c, E = a77054f, W = 3333a333
+i = 64, A = 5db7900c, B = edb07b32, C = 6e5f6778, D = 5b93674b, E = 745fc25c, W = 3c1d2994
+i = 65, A = 23865693, B = 5db7900c, C = bb6c1ecc, D = 6e5f6778, E = 5b93674b, W = 555555d5
+i = 66, A = 1f5aee25, B = 23865693, C = 176de403, D = bb6c1ecc, E = 6e5f6778, W = 1508e8
+i = 67, A = e71abd80, B = 1f5aee25, C = c8e195a4, D = 176de403, E = bb6c1ecc, W = 33732333
+i = 68, A = f6be1d0c, B = e71abd80, C = 47d6bb89, D = c8e195a4, E = 176de403, W = ccc0eccc
+i = 69, A = 12b4cb94, B = f6be1d0c, C = 39c6af60, D = 47d6bb89, E = c8e195a4, W = f0f2f070
+i = 70, A = 730d37e1, B = 12b4cb94, C = 3daf8743, D = 39c6af60, E = 47d6bb89, W = 816400
+i = 71, A = acf17f66, B = 730d37e1, C = 4ad32e5, D = 3daf8743, E = 39c6af60, W = 22332222
+i = 72, A = ec115651, B = acf17f66, C = 5cc34df8, D = 4ad32e5, E = 3daf8743, W = ffa875ff
+i = 73, A = 6eca7abf, B = ec115651, C = ab3c5fd9, D = 5cc34df8, E = 4ad32e5, W = efee66ee
+i = 74, A = 881ee0eb, B = 6eca7abf, C = 7b045594, D = ab3c5fd9, E = 5cc34df8, W = c3d14fd3
+i = 75, A = ea01a231, B = 881ee0eb, C = dbb29eaf, D = 7b045594, E = ab3c5fd9, W = d0400
+i = 76, A = a04deeff, B = ea01a231, C = e207b83a, D = dbb29eaf, E = 7b045594, W = c1d25b43
+i = 77, A = 7d33ee7c, B = a04deeff, C = 7a80688c, D = e207b83a, E = dbb29eaf, W = 5a5a727a
+i = 78, A = 86b5ff1d, B = 7d33ee7c, C = e8137bbf, D = 7a80688c, E = e207b83a, W = 15890c0
+i = 79, A = 7dda7a1e, B = 86b5ff1d, C = 1f4cfb9f, D = e8137bbf, E = 7a80688c, W = b0f1f0f
+i = 80, A = a6113b61, B = 7dda7a1e, C = 61ad7fc7, D = 1f4cfb9f, E = e8137bbf, W = 33f44df3
+d565e626da825a7fa685cc52f7f5015abe65daf
+
+
+At time                    0, in = 31323334, out = 7110eda4d09e062aa5e4a390b0a572ac0d2c0220
+At time                   30, in = 41424344, out = fb2f85c88567f3c8ce9b799c7c54642d0c7b41f6
+At time                   60, in = 61626364, out = 81fe8bfe87576c3ecb22426f8e57847382917acf
+At time                   90, in = 212f395e, out = 436613e8889ddf2b9b58b015a853226ff08289bd
