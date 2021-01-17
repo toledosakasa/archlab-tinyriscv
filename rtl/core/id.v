@@ -192,6 +192,17 @@ module id(
                     end
                 endcase
             end
+            //custom0型指令 sha1
+            `INST_TYPE_CUSTOM_0: begin
+                reg1_raddr_o = rs1;
+                reg2_raddr_o = rs2;
+                reg_we_o = `WriteDisable;
+                reg_waddr_o = `ZeroReg;
+                op1_o = reg1_rdata_i;
+                op2_o = {{20{inst_i[31]}}, inst_i[31:25], inst_i[11:7]};
+                op1_jump_o = inst_addr_i;
+                op2_jump_o = 32'h4; //要跳到当前指令地址+4的地方去
+            end
             //b型分支指令
             `INST_TYPE_B: begin
                 case (funct3)

@@ -47,6 +47,14 @@ module tinyriscv(
     // pc_reg模块输出信号
 	wire[`InstAddrBus] pc_pc_o;
 
+    //sha1模块输出信号
+    wire[`Sha1Out] sha1_sha1_o;
+
+    //sha1_assist输出信号
+    wire[3:0] sha1_assist_state_o;
+    wire[`RegBus] sha1_assist_para_o;
+    wire[`MemAddrBus] sha1_assist_addr_o;      
+
     //bp_unit模块输出信号
     wire bp_isbranch_o;
     wire[`InstAddrBus] bp_branch_addr_o;
@@ -112,6 +120,10 @@ module tinyriscv(
     wire ex_csr_we_o;
     wire[`MemAddrBus] ex_csr_waddr_o;
     wire[1:0] ex_branch_taken_o;
+    wire[`Sha1In] ex_sha1_o;         // 发给sha1的输入
+    wire ex_sha1_assist_o;
+    wire[`RegBus] ex_sha1_para_o;
+    wire[`MemAddrBus] ex_sha1_addr_o;
 
     // regs模块输出信号
     wire[`RegBus] regs_rdata1_o;
@@ -176,6 +188,22 @@ module tinyriscv(
         .branch_addr_o(bp_branch_addr_o),
         .branch_taken_i(ex_branch_taken_o),
         .hold_flag_i(ctrl_hold_flag_o)
+    );
+
+    sha1 u_sha1(
+        .sha1_i(ex_sha1_o),
+        .sha1_o(sha1_sha1_o)
+    );
+
+    sha1_assist u_sha1_assist(
+        .clk(clk),
+        .rst(rst),
+        .start_i(ex_sha1_assist_o),
+        .sha1_state_o(sha1_assist_state_o),
+        .sha1_para_i(ex_sha1_para_o),
+        .sha1_addr_i(ex_sha1_addr_o),
+        .sha1_para_o(sha1_assist_para_o),
+        .sha1_addr_o(sha1_assist_addr_o)
     );
 
     // ctrl模块例化, 产生控制信号的模块，执行部分，clint，和rib会产生一些信号作为控制模块的输入
@@ -349,7 +377,15 @@ module tinyriscv(
         .csr_we_o(ex_csr_we_o),
         .csr_waddr_o(ex_csr_waddr_o),
         .isbranch_i(ie_isbranch_o),
-        .branch_taken_o(ex_branch_taken_o)
+        .branch_taken_o(ex_branch_taken_o),
+        .sha1_out_i(sha1_sha1_o),
+        .sha1_in_o(ex_sha1_o),
+        .sha1_assist_start_o(ex_sha1_assist_o),
+        .sha1_state_i(sha1_assist_state_o),
+        .sha1_para_o(ex_sha1_para_o),
+        .sha1_addr_o(ex_sha1_addr_o),
+        .sha1_para_i(sha1_assist_para_o),
+        .sha1_addr_i(sha1_assist_addr_o)
     );
 
     // div模块例化

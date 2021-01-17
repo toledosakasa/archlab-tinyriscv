@@ -164,7 +164,11 @@
 `define RegNumLog2 5
 
 
-//
+//Sha1
 `define Sha1In 31:0
 `define Sha1Out 159:0
 `define Sha1Pad 512:0
+
+// Sha1 inst
+`define INST_TYPE_CUSTOM_0 7'b0001011
+`define INST_SHA1     3'b011 //funct3
