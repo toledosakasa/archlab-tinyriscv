@@ -45,7 +45,7 @@ module tinyriscv(
     );
 
     // pc_reg模块输出信号
-	wire[`InstAddrBus] pc_pc_o;
+	(* mark_debug ="true" *) wire[`InstAddrBus] pc_pc_o;
 
     //sha1模块输出信号
     wire[`Sha1Out] sha1_sha1_o;
