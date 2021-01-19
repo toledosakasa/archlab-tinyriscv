@@ -12,10 +12,10 @@ module sha1_dfa(
     input wire[`MemAddrBus] sha1_addr_i,    // 结果要写入的地址   
 
     // to ex
-    output reg[`MemBus] result_o,          // sha1结果
+    output reg[`MemBus] result_o,           // sha1的结果，注意是每次写入的32位值
     output reg ready_o,                     // 运算结束信号
     output reg busy_o,                      // 正在运算信号
-    output reg[`MemAddrBus] sha1_addr_o,
+    output reg[`MemAddrBus] sha1_addr_o,    //写入的地址
     output reg write_busy_o                 //正在需要写入的阶段  
 
     );

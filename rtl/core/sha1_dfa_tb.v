@@ -1,5 +1,5 @@
 `timescale 1ns/1ns
-module sha1_tb;
+module sha1_dfa_tb;
 reg clk = 0;
 reg rst = 0;
 reg [31:0] in;
