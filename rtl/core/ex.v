@@ -81,20 +81,16 @@ module ex(
     // to bp_unit
     output wire[1:0] branch_taken_o,
 
-    //to sha1
-    output reg[`Sha1In] sha1_in_o,
-    //from sha1
-    input wire[`Sha1Out] sha1_out_i,
-
-    //to sha1_assist
-    output reg sha1_assist_start_o,
-    output reg[`RegBus] sha1_para_o,
+    //to sha1_dfa
+    output reg[`Sha1In] sha1_para_o,
+    output wire sha1_start_o,
     output reg[`MemAddrBus] sha1_addr_o,
-
-    //from sha1_assist
-    input wire[3:0] sha1_state_i,
-    input wire[`RegBus] sha1_para_i,
-    input wire[`MemAddrBus] sha1_addr_i
+    //from sha1_dfa
+    input wire[`MemBus] sha1_result_i,
+    input wire sha1_ready_i,
+    input wire sha1_busy_i,
+    input wire[`MemAddrBus] sha1_addr_i,
+    input wire sha1_write_busy_i
 
     );
 
@@ -138,6 +134,8 @@ module ex(
     reg[`MemBus] mem_wdata;
     reg[`MemAddrBus] mem_waddr;
 
+    reg sha1_start;
+
     reg sha1_hold_flag;
     reg sha1_jump_flag;
     reg[`InstAddrBus] sha1_jump_addr;
@@ -177,6 +175,8 @@ module ex(
 
     assign div_start_o = (int_assert_i == `INT_ASSERT)? `DivStop: div_start;
 
+    assign sha1_start_o = (int_assert_i == `INT_ASSERT)? 0: sha1_start;
+
     assign reg_wdata_o = reg_wdata | div_wdata;
     // 响应中断时不写通用寄存器
     assign reg_we_o = (int_assert_i == `INT_ASSERT)? `WriteDisable: (reg_we || div_we);
@@ -205,68 +205,53 @@ module ex(
     assign csr_waddr_o = csr_waddr_i;
 
 
-
     // 处理sha1指令
-    reg[31:0] sha1_addr_base;
     always @ (*) begin
-        sha1_in_o = sha1_para_i;
-        sha1_addr_base = sha1_addr_i;
+        sha1_para_o = reg2_rdata_i;
+        sha1_addr_o = op1_add_op2_res;
+
+
         if ((opcode == `INST_TYPE_CUSTOM_0)) begin
+            sha1_start = 1;
             sha1_jump_flag = `JumpEnable;   
             sha1_jump_addr = op1_jump_add_op2_jump_res;
-            sha1_assist_start_o = 1;
-            sha1_para_o = reg2_rdata_i;
-            sha1_addr_o = op1_add_op2_res;
             sha1_hold_flag = `HoldEnable;
-            sha1_req = 0;
+
             sha1_we = 0;
-            sha1_waddr = 0;
-            sha1_wdata = 0;
+            sha1_wdata = `ZeroWord;
+            sha1_waddr = `ZeroWord;
         end else begin
             sha1_jump_flag = `JumpDisable;
             sha1_jump_addr = `ZeroWord;
-            sha1_assist_start_o = 0;
-            if (sha1_state_i[3] == 1) begin
-                sha1_req = 1;
-                sha1_we = 1;
-                case (sha1_state_i[2:0])
-                    0: begin
-                        sha1_hold_flag = `HoldEnable;
-                        sha1_waddr = sha1_addr_base;
-                        sha1_wdata = sha1_out_i[159:128];
-                    end
-                    1: begin
-                        sha1_hold_flag = `HoldEnable;
-                        sha1_waddr = sha1_addr_base + 4;
-                        sha1_wdata = sha1_out_i[127:96];
-                    end
-                    2: begin
-                        sha1_hold_flag = `HoldEnable;
-                        sha1_waddr = sha1_addr_base + 8;
-                        sha1_wdata = sha1_out_i[95:64];
-                    end
-                    3: begin
-                        sha1_hold_flag = `HoldEnable;
-                        sha1_waddr = sha1_addr_base + 12;
-                        sha1_wdata = sha1_out_i[63:32];
-                    end
-                    4: begin
-                        sha1_hold_flag = `HoldDisable;
-                        sha1_waddr = sha1_addr_base + 16;
-                        sha1_wdata = sha1_out_i[31:0];
-                    end
-                    default: begin
-                        sha1_hold_flag = `HoldDisable;
-                        sha1_waddr = 0;
-                        sha1_wdata = 0;
-                    end
-                endcase
-            end else begin
-                sha1_hold_flag = `HoldDisable;
-                sha1_req = 0;
+            if (sha1_busy_i == `True) begin
+                sha1_start = 1;
+                sha1_hold_flag = `HoldEnable;
                 sha1_we = 0;
-                sha1_waddr = 0;
-                sha1_wdata = 0;
+                sha1_wdata = `ZeroWord;
+                sha1_waddr = `ZeroWord;
+            end else begin
+                if (sha1_ready_i == 1) begin
+                    if(sha1_write_busy_i == 1) begin
+                        sha1_start = 1;
+                        sha1_wdata = sha1_result_i;
+                        sha1_waddr = sha1_addr_i;
+                        sha1_we = 1;
+                        sha1_req = 1;
+                        sha1_hold_flag = `HoldEnable;
+                    end else begin
+                        sha1_start = 0;
+                        sha1_hold_flag = `HoldDisable;
+                        sha1_we = 0;
+                        sha1_req = 0;
+                        sha1_wdata = `ZeroWord;
+                        sha1_waddr = `ZeroWord;
+                    end
+                end else begin
+                    sha1_hold_flag = `HoldDisable;
+                    sha1_we = 0;
+                    sha1_wdata = `ZeroWord;
+                    sha1_waddr = `ZeroWord;
+                end
             end
         end
     end

@@ -12,10 +12,11 @@ module sha1_dfa(
     input wire[`MemAddrBus] sha1_addr_i,    // 结果要写入的地址   
 
     // to ex
-    output reg[`Sha1Out] result_o,          // sha1结果
+    output reg[`MemBus] result_o,          // sha1结果
     output reg ready_o,                     // 运算结束信号
     output reg busy_o,                      // 正在运算信号
-    output reg[`MemAddrBus] sha1_addr_o  
+    output reg[`MemAddrBus] sha1_addr_o,
+    output reg write_busy_o                 //正在需要写入的阶段  
 
     );
 
@@ -38,6 +39,7 @@ module sha1_dfa(
     reg[31:0] D;
     reg[31:0] E;
     reg[31:0] count;
+    reg[31:0] write_count; //
     wire[31:0] fun_res;
     wire[31:0] k_res;
     
@@ -65,9 +67,11 @@ module sha1_dfa(
         if (rst == `RstEnable) begin
             state <= STATE_IDLE;
             ready_o <= 0;
-            result_o <= 160'b0;
+            result_o <= 32'b0;
             sha1_addr_o <= `ZeroWord;
             busy_o <= 0;
+            write_busy_o <=0;
+            write_count <= 0;
 
         end else begin
             case (state)
@@ -80,7 +84,7 @@ module sha1_dfa(
                     end else begin
                         para <= `ZeroWord;
                         ready_o <= 0;
-                        result_o <= 160'b0;
+                        result_o <= 32'b0;
                         busy_o <= `False;
                         sha1_addr_o <= `ZeroWord;
                     end
@@ -103,12 +107,13 @@ module sha1_dfa(
                     end else begin
                         state <= STATE_IDLE;
                         ready_o <= 0;
-                        result_o <= 160'b0;
+                        result_o <= 32'b0;
                         busy_o <= `False;
                     end
                 end
 
                 STATE_CALC: begin
+                    write_count <= 0;
                     if (start_i == `DivStart) begin
                         count <= count+1;
                         W <= {W[479:0], W_tmp};//左移W
@@ -126,7 +131,7 @@ module sha1_dfa(
                     end else begin
                         state <= STATE_IDLE;
                         ready_o <= 0;
-                        result_o <= 160'b0;
+                        result_o <= 32'b0;
                         busy_o <= `False;
                     end
                 end
@@ -134,17 +139,41 @@ module sha1_dfa(
                 STATE_END: begin
                     if (start_i == `DivStart) begin
                         ready_o <= 1;
-                        state <= STATE_IDLE;
                         busy_o <= 0;
-                        result_o[159:128] <= A+32'h67452301;
-                        result_o[127:96] <= B+32'hEFCDAB89;
-                        result_o[95:64] <= C+32'h98BADCFE;
-                        result_o[63:32] <= D+32'h10325476;
-                        result_o[31:0] <= E+32'hC3D2E1F0;
+                        if(write_count == 5) begin //要到5时才结束写
+                            state <= STATE_IDLE;
+                            write_busy_o <= 0;
+                        end else begin
+                            state <= STATE_END;
+                            write_busy_o <= 1;
+                        end
+                        write_count <= write_count + 1;
+                        case (write_count)
+                            0:begin
+                                result_o <= A+32'h67452301;
+                                sha1_addr_o <= sha1_addr_o;
+                            end 
+                            1:begin
+                                result_o <= B+32'hEFCDAB89;
+                                sha1_addr_o <= sha1_addr_o + 4;
+                            end
+                            2:begin
+                                result_o <= C+32'h98BADCFE;
+                                sha1_addr_o <= sha1_addr_o + 4;
+                            end
+                            3:begin
+                                result_o <= D+32'h10325476;
+                                sha1_addr_o <= sha1_addr_o + 4;
+                            end
+                            default: begin
+                                result_o <= E+32'hC3D2E1F0;
+                                sha1_addr_o <= sha1_addr_o + 4;
+                            end
+                        endcase
                     end else begin
                         state <= STATE_IDLE;
                         ready_o <= 0;
-                        result_o <= 160'b0;
+                        result_o <= 32'b0;
                         busy_o <= `False;
                     end
                 end

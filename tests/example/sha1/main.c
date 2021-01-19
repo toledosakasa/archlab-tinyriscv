@@ -23,7 +23,6 @@ int main()
     asm volatile("fence" ::: "memory");
 
     if (sha_res[0] == 0x7110eda4 && sha_res[1] == 0xd09e062a && sha_res[2] == 0xa5e4a390 && sha_res[3] == 0xb0a572ac && sha_res[4] == 0x0d2c0220)
-    // if (sha_res[0] == 0x7110eda4)
         set_test_pass();
     else
         set_test_fail();
