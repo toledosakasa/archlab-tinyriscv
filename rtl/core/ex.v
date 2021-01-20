@@ -220,6 +220,7 @@ module ex(
             sha1_we = 0;
             sha1_wdata = `ZeroWord;
             sha1_waddr = `ZeroWord;
+            sha1_req = 0;
         end else begin
             sha1_jump_flag = `JumpDisable;
             sha1_jump_addr = `ZeroWord;
@@ -227,6 +228,7 @@ module ex(
                 sha1_start = 1;
                 sha1_hold_flag = `HoldEnable;
                 sha1_we = 0;
+                sha1_req = 0;
                 sha1_wdata = `ZeroWord;
                 sha1_waddr = `ZeroWord;
             end else begin
@@ -247,10 +249,12 @@ module ex(
                         sha1_waddr = `ZeroWord;
                     end
                 end else begin
+                    sha1_start = 0;
                     sha1_hold_flag = `HoldDisable;
                     sha1_we = 0;
                     sha1_wdata = `ZeroWord;
                     sha1_waddr = `ZeroWord;
+                    sha1_req = 0;
                 end
             end
         end

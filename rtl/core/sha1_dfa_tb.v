@@ -5,10 +5,11 @@ reg rst = 0;
 reg [31:0] in;
 reg start;
 reg [31:0]addr_i;
-wire [159:0] out;
+wire [31:0] out;
 wire [31:0]addr_o;
 wire ready;
 wire busy;
+wire w_busy;
 
 sha1_dfa DUT(
 	.clk(clk),
@@ -19,7 +20,8 @@ sha1_dfa DUT(
     .result_o(out),
     .ready_o(ready),
     .busy_o(busy),
-    .sha1_addr_o(addr_o)
+    .sha1_addr_o(addr_o),
+    .write_busy_o(w_busy)
 );
 initial begin
     rst = 0; #30;
